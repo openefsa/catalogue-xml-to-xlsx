@@ -31,6 +31,7 @@ public abstract class ExtendedSheetConverter extends SheetConverter {
 		case "validFrom":
 		case "validTo":
 		case "lastUpdate":
+		case "versionDate":
 			
 			Date date = DateTrimmer.trimDate( value );
 			

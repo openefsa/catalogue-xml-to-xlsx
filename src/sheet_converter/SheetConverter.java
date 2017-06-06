@@ -273,7 +273,7 @@ public abstract class SheetConverter {
 
 				// add the new piece if it is not the new line
 				// get the data only if we are in a root node
-				if ( !newPiece.equals( "\n" ) && isRootNode )
+				if ( !newPiece.equals( "\n" ) )//&& isRootNode )
 					lastContent.append( newPiece );
 			}
 		};
@@ -305,11 +305,14 @@ public abstract class SheetConverter {
 		if ( qName.equals( rootNode ) ) {
 			isRootNode = true;
 			currentRow = createRow( sheet );
+			
+			// initialize the content
+			lastContent = new StringBuilder();
 		}
 
 		// if we are inside a root node tell to the child class to start
 		// processing the current node
-		if ( isRootNode )
+		//if ( isRootNode )
 			SheetConverter.this.startElement( currentRow, qName, attr );
 	}
 	

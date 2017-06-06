@@ -75,7 +75,7 @@ public class XmlCatalogueToExcel {
 	public static final String TERM_ROOT_NODE = "term";
 	
 	// the name of the main node for release notes
-	public static final String NOTES_ROOT_NODE = NotesSheetConverter.OP_DETAIL_NODE;
+	public static final String NOTES_ROOT_NODE = NotesSheetConverter.OP_INFO_NODE;
 	
 	
 	// the xml file which has to be converted
