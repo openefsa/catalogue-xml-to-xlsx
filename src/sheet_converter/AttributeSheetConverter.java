@@ -3,6 +3,7 @@ package sheet_converter;
 import java.util.HashMap;
 
 import org.apache.poi.ss.usermodel.Row;
+import org.xml.sax.Attributes;
 
 /**
  * Parse the catalogue xml data related to attributes and create the attribute sheet
@@ -16,7 +17,7 @@ public class AttributeSheetConverter extends ExtendedSheetConverter {
 	}
 
 	@Override
-	public void startElement(Row row, String nodeName) {}
+	public void startElement(Row row, String nodeName, Attributes attr) {}
 
 	@Override
 	public void addElement(Row row, String nodeName, String value) {	

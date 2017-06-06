@@ -12,6 +12,11 @@ public class SheetHeader {
 	private int columnIndex;
 	private String columnName;
 
+	/**
+	 * Create a sheet header
+	 * @param columnIndex the index that the column will obtain once created
+	 * @param columnName the name of the new column
+	 */
 	public SheetHeader( int columnIndex, String columnName ) {
 		this.columnIndex = columnIndex;
 		this.columnName = columnName;
@@ -33,5 +38,10 @@ public class SheetHeader {
 
 		// if same column name or same index we say that two sheet headers are equal
 		return header.getColumnName().equals( columnName ) || header.getColumnIndex() == columnIndex;
+	}
+	
+	@Override
+	public String toString() {
+		return "HEADER: index=" + columnIndex + ";name=" + columnName;
 	}
 }

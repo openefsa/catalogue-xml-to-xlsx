@@ -12,6 +12,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import sheet_converter.AttributeSheetConverter;
 import sheet_converter.CatalogueSheetConverter;
 import sheet_converter.HierarchySheetConverter;
+import sheet_converter.NotesSheetConverter;
 import sheet_converter.SheetConverter;
 import sheet_converter.TermSheetConverter;
 
@@ -40,6 +41,9 @@ public class XmlCatalogueToExcel {
 		
 	// the name of the xslt which filter only the term information from the input xml
 	public static final String TERM_XSLT_NAME = "term.xslt";
+	
+	// the name of the xslt which filter only the release notes information from the input xml
+	public static final String NOTES_XSLT_NAME = "releaseNotes.xslt";
 
 	
 	// the name of the sheet which will contain the catalogue data
@@ -53,10 +57,13 @@ public class XmlCatalogueToExcel {
 
 	// the name of the sheet which will contain the term data
 	public static final String TERM_SHEET_NAME = "term";
+	
+	// the name of the sheet which will contain the release notes data
+	public static final String NOTES_SHEET_NAME = "releaseNotes";
 
 	
 	// the name of the main node for the catalogue node
-	public static final String CATALOGUE_ROOT_NODE = "catalogue";
+	public static final String CATALOGUE_ROOT_NODE = "message";
 
 	// the name of the main node for hierarchies
 	public static final String HIERARCHY_ROOT_NODE = "hierarchy";
@@ -66,6 +73,9 @@ public class XmlCatalogueToExcel {
 	
 	// the name of the main node for terms
 	public static final String TERM_ROOT_NODE = "term";
+	
+	// the name of the main node for release notes
+	public static final String NOTES_ROOT_NODE = NotesSheetConverter.OP_DETAIL_NODE;
 	
 	
 	// the xml file which has to be converted
@@ -196,6 +206,20 @@ public class XmlCatalogueToExcel {
 		// create the sheet and input its data
 		termConverter.buildSheet( workbook, TERM_SHEET_NAME );
 		termConverter.parse();
+		
+		
+		System.out.println ( "Creating release note sheet..." );
+		
+		// filter the xml to get only the data related to the release notes
+		outputFilename = filterXml( workbook, NOTES_XSLT_NAME, NOTES_SHEET_NAME );
+
+		// create a term converter, we need the hierarchy and attribute sheet to
+		// create the term sheet
+		NotesSheetConverter notesConverter = new NotesSheetConverter( outputFilename, NOTES_ROOT_NODE );
+
+		// create the sheet and input its data
+		notesConverter.buildSheet( workbook, NOTES_SHEET_NAME );
+		notesConverter.parse();
 		
 		// delete the temp file
 		deleteFile( outputFilename );

@@ -5,6 +5,7 @@ import java.util.HashMap;
 
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
+import org.xml.sax.Attributes;
 
 import data_transformation.ValuesGrouper;
 
@@ -93,7 +94,7 @@ public class HierarchySheetConverter extends ExtendedSheetConverter {
 
 
 	@Override
-	public void startElement(Row row, String nodeName) {
+	public void startElement(Row row, String nodeName, Attributes attr) {
 
 		// if we found a hierarchy groups element
 		if ( nodeName.equals( "hierarchyGroups" ) ) {
@@ -142,6 +143,7 @@ public class HierarchySheetConverter extends ExtendedSheetConverter {
 			// create a cell for the current row in the right column
 			// we use the xml node name as key for identifying the related header
 			createCell( nodeName, row, value );
+			break;
 		}
 	}
 

@@ -5,6 +5,7 @@ import java.util.HashMap;
 
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
+import org.xml.sax.Attributes;
 
 import data_transformation.BooleanConverter;
 import data_transformation.HierarchyAssignment;
@@ -43,7 +44,7 @@ public class TermSheetConverter extends ExtendedSheetConverter {
 	}
 
 	@Override
-	public void startElement(Row row, String nodeName) {
+	public void startElement(Row row, String nodeName, Attributes attr) {
 		
 		// if a node hierarchy assignment starts (i.e. a node which says if the term is
 		// contained in the hierarchy or not)

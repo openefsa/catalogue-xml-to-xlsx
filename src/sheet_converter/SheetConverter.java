@@ -71,7 +71,8 @@ public abstract class SheetConverter {
 	 * Convert a xml file into an xml sheet
 	 * @param inputFilename, the xml file to be parsed
 	 * @param rootNode, the root node of the xml from which starting the parsing operation
-	 * @param headers, the xml nodes which has to be considered (for each node a new column in the sheet is created)
+	 * @param headers, the xml nodes which has to be considered (for each 
+	 * node a new column in the sheet is created)
 	 */
 	public SheetConverter( String inputFilename, String rootNode ) {
 
@@ -132,7 +133,7 @@ public abstract class SheetConverter {
 	public Cell createCell ( String XmlNodeName, Row row, String value ) {
 
 		SheetHeader header = headers.get( XmlNodeName );
-
+		
 		// if the header is not in the headers hashmap return
 		if ( header == null ) {
 			return null;
@@ -253,7 +254,7 @@ public abstract class SheetConverter {
 			// when a node is encountered
 			public void startElement(String uri, String localName,String qName, 
 					Attributes attributes) throws SAXException {
-				startAnalyzingNode( qName );
+				startAnalyzingNode( qName, attributes );
 			}
 
 			@Override
@@ -271,7 +272,8 @@ public abstract class SheetConverter {
 				String newPiece = new String(ch, start, length);
 
 				// add the new piece if it is not the new line
-				if ( !newPiece.equals("\n" ) )
+				// get the data only if we are in a root node
+				if ( !newPiece.equals( "\n" ) && isRootNode )
 					lastContent.append( newPiece );
 			}
 		};
@@ -296,7 +298,7 @@ public abstract class SheetConverter {
 	 * method when we found <term>.
 	 * @param qName
 	 */
-	void startAnalyzingNode( String qName ) {
+	void startAnalyzingNode( String qName, Attributes attr ) {
 		
 		// if we have a root node then create a new row
 		// and set that we have to parse the entire node
@@ -308,7 +310,7 @@ public abstract class SheetConverter {
 		// if we are inside a root node tell to the child class to start
 		// processing the current node
 		if ( isRootNode )
-			SheetConverter.this.startElement( currentRow, qName );
+			SheetConverter.this.startElement( currentRow, qName, attr );
 	}
 	
 	/**
@@ -329,15 +331,11 @@ public abstract class SheetConverter {
 			isRootNode = false;
 		}
 
-		// if we are processing a node which is inside the root node
-		// call external adding process to add the element to the sheet
-		if ( isRootNode ) {
+		// process the node and add the element to the excel
+		SheetConverter.this.addElement( currentRow, qName, lastContent.toString() );
 
-			SheetConverter.this.addElement( currentRow, qName, lastContent.toString() );
-
-			// reset last content
-			lastContent = new StringBuilder();
-		}
+		// reset last content
+		lastContent = new StringBuilder();
 
 		// Diagnostic: print every printRowCount rows
 		if ( rowNum >= printCount + printRowCount ) {
@@ -424,14 +422,16 @@ public abstract class SheetConverter {
 	 * Start processing the current node (nodeName) for inserting the current row
 	 * @param row
 	 * @param nodeName
+	 * @param attr the attribute related to the xml node
 	 */
-	public abstract void startElement ( Row row, String nodeName );
+	public abstract void startElement ( Row row, String nodeName, Attributes attr );
 
 	/**
 	 * Add the current node (nodename) in the current row using value as value to be inserted
 	 * @param row
 	 * @param nodeName
 	 * @param value
+
 	 */
 	public abstract void addElement ( Row row, String nodeName, String value );
 

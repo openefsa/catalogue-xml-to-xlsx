@@ -3,6 +3,8 @@ package sheet_converter;
 import java.util.HashMap;
 
 import org.apache.poi.ss.usermodel.Row;
+import org.xml.sax.Attributes;
+
 import data_transformation.ValuesGrouper;
 
 /**
@@ -13,21 +15,43 @@ import data_transformation.ValuesGrouper;
  */
 public class CatalogueSheetConverter extends ExtendedSheetConverter {
 	
-	boolean isGroupNode;  // if we are analyzing a catalogueGroups node or not
-	ValuesGrouper group;  // used to save multiple values into a single cell
+	private boolean isGroupNode;  // if we are analyzing a catalogueGroups node or not
+	private boolean parsingNotes;  // true if we are parsing the release notes
+	private ValuesGrouper group;  // used to save multiple values into a single cell
 	
 	public CatalogueSheetConverter(String inputFilename, String rootNode ) {
 		super(inputFilename, rootNode);
 		isGroupNode = false;
+		parsingNotes = false;
 	}
 	
 	@Override
-	public void startElement( Row row, String nodeName ) {
+	public void startElement( Row row, String nodeName, Attributes attr ) {
 
 		// if we found a catalogue groups element
-		if ( nodeName.equals( "catalogueGroups" ) ) {
+		switch ( nodeName ) {
+		
+		case "catalogueGroups":
 			isGroupNode = true;
 			group = new ValuesGrouper();
+			break;
+			
+		case "releaseNotes":
+			parsingNotes = true;
+			break;
+			
+		case "version":
+			
+			// if release note version, get its attribute
+			// we need to handle the nodeName in an exceptional
+			// way, since the header "version" is already used
+			// by the catalogue version
+			if ( parsingNotes )
+				createCell( "noteInternalVersion", row, attr.getValue( "internalVersion" ) );
+
+			break;
+		default:
+			break;
 		}
 	}
 	
@@ -63,9 +87,19 @@ public class CatalogueSheetConverter extends ExtendedSheetConverter {
 			if ( isGroupNode )
 				group.addValue( value );
 			break;
+
+			// end release note parsing
+		case "releaseNotes":
+			parsingNotes = false;
+			break;
+			
+		case "version":
+			// create the version cell only for the catalogue version
+			if ( !parsingNotes )
+				createCell( nodeName, row, value );
+			break;
 			
 		default:
-			
 			// create a cell for the current row in the right column
 			createCell( nodeName, row, value );
 			break;
@@ -100,8 +134,12 @@ public class CatalogueSheetConverter extends ExtendedSheetConverter {
 		headers.put("validTo", new SheetHeader(13, "validTo") );
 		headers.put("status", new SheetHeader(14, "status") );
 		headers.put("deprecated", new SheetHeader(15, "deprecated") );
-
+		
+		// release note information (they will be inserted into the catalogue sheet)
+		headers.put("description", new SheetHeader(16, "noteDescription") );
+		headers.put("versionDate", new SheetHeader(17, "noteVersionDate") );
+		headers.put("noteInternalVersion", new SheetHeader(18, "noteInternalVersion") );
+		headers.put("internalVersionNote", new SheetHeader(19, "internalVersionNote") );
 		return headers;
 	}
-
 }
