@@ -1,16 +1,12 @@
 package xml_to_excel;
 
-import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
 import javax.xml.transform.TransformerException;
 
 import org.apache.poi.openxml4j.util.ZipSecureFile;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import sheet_converter.AttributeSheetConverter;
 import sheet_converter.CatalogueSheetConverter;
@@ -133,13 +129,103 @@ public class XmlCatalogueToExcel {
 	public void convertXmlToExcel () throws TransformerException {
 
 		// create a new workbook
-		XSSFWorkbook workbook = new XSSFWorkbook();
-		//SXSSFWorkbook workbook = new SXSSFWorkbook();
+		SXSSFWorkbook workbook = new SXSSFWorkbook();
 		
-		System.out.println ( "Creating catalogue sheet..." );
+		// convert catalogue sheet
+		ConversionPerformer cat = new ConversionPerformer( workbook, 
+				inputXml, CATALOGUE_XSLT_NAME ) {
+			
+			@Override
+			public SheetConverter getConverter( String filename ) {
+				// create a catalogue sheet converter to parse the xml file
+				CatalogueSheetConverter catConverter = new CatalogueSheetConverter( 
+						filename, CATALOGUE_ROOT_NODE );
+				return catConverter;
+			}
+		};
+
+		cat.convert( CATALOGUE_SHEET_NAME );
+		
+		
+		// convert hierarchy sheet
+		ConversionPerformer hier = new ConversionPerformer( workbook, 
+				inputXml, HIERARCHY_XSLT_NAME ) {
+			
+			@Override
+			public SheetConverter getConverter(String inputFilename) {
+				// create a hierarchy sheet converter to parse the xml file
+				HierarchySheetConverter hierarchyConverter = new HierarchySheetConverter( 
+						inputFilename, HIERARCHY_ROOT_NODE );
+				return hierarchyConverter;
+			}
+		};
+		
+		hier.convert( HIERARCHY_SHEET_NAME );
+		
+		
+		// convert attr sheet
+		ConversionPerformer attr = new ConversionPerformer( workbook, 
+				inputXml, ATTRIBUTE_XSLT_NAME ) {
+			
+			@Override
+			public SheetConverter getConverter(String inputFilename) {
+				
+				// create a attribute sheet converter to parse the xml file
+				AttributeSheetConverter attrConverter = new AttributeSheetConverter( 
+						inputFilename, ATTRIBUTE_ROOT_NODE );
+				
+				return attrConverter;
+			}
+		};
+		
+		attr.convert( ATTRIBUTE_SHEET_NAME );
+		
+		
+		// convert term sheet
+		ConversionPerformer term = new ConversionPerformer( workbook, 
+				inputXml, TERM_XSLT_NAME ) {
+			
+			@Override
+			public SheetConverter getConverter(String inputFilename) {
+				
+				// create a term converter, we need the hierarchy and attribute sheet to
+				// create the term sheet
+				TermSheetConverter termConverter = new TermSheetConverter( 
+						inputFilename, TERM_ROOT_NODE, 
+						hier.getSheet(), attr.getSheet() );
+				
+				// set as master hierarchy code the catalogue code
+				termConverter.setMasterHierarchyCode( 
+						SheetConverter.getSheetColumn( 
+								cat.getSheet(), "code" ).get(0) );
+				
+				return termConverter;
+			}
+		};
+		
+		term.convert( TERM_SHEET_NAME );
+
+		
+		// create release notes sheet
+		ConversionPerformer notes = new ConversionPerformer( workbook, inputXml, NOTES_XSLT_NAME ) {
+			
+			@Override
+			public SheetConverter getConverter(String inputFilename) {
+				NotesSheetConverter notesConverter = new NotesSheetConverter( 
+						inputFilename, NOTES_ROOT_NODE );
+				
+				return notesConverter;
+			}
+		};
+		
+		notes.convert( NOTES_SHEET_NAME );
+
+		// create a term converter, we need the hierarchy and attribute sheet to
+		// create the term sheet
+
 		
 		// filter the input xml to get only the data related to the catalogue
-		String outputFilename = filterXml( workbook, CATALOGUE_XSLT_NAME, CATALOGUE_SHEET_NAME );
+		/*String outputFilename = filterXml( workbook, CATALOGUE_XSLT_NAME, CATALOGUE_SHEET_NAME );
 		
 		// create a catalogue sheet converter to parse the xml file
 		CatalogueSheetConverter catConverter = new CatalogueSheetConverter( outputFilename, CATALOGUE_ROOT_NODE );
@@ -151,9 +237,9 @@ public class XmlCatalogueToExcel {
 		catConverter.parse();
 		
 		// delete the temp file
-		deleteFile( outputFilename );
+		deleteFile( outputFilename );*/
 		
-		
+		/*
 		System.out.println ( "Creating hierarchy sheet..." );
 		
 		// filter the xml to get only the data related to the hierarchies
@@ -174,7 +260,8 @@ public class XmlCatalogueToExcel {
 		// delete the temp file
 		deleteFile( outputFilename );
 
-		
+*/
+		/*
 		System.out.println ( "Creating attribute sheet..." );
 		
 		// filter the xml to get only the data related to the attributes
@@ -190,9 +277,9 @@ public class XmlCatalogueToExcel {
 		attrConverter.parse();
 
 		// delete the temp file
-		deleteFile( outputFilename );
+		deleteFile( outputFilename );*/
 		
-
+/*
 		System.out.println ( "Creating term sheet..." );
 		
 		// filter the xml to get only the data related to the terms
@@ -210,6 +297,8 @@ public class XmlCatalogueToExcel {
 		termConverter.buildSheet( workbook, TERM_SHEET_NAME );
 		termConverter.parse();
 		
+		// delete the temp file
+		deleteFile( outputFilename );
 		
 		System.out.println ( "Creating release note sheet..." );
 		
@@ -226,7 +315,7 @@ public class XmlCatalogueToExcel {
 		
 		// delete the temp file
 		deleteFile( outputFilename );
-		
+		*/
 		
 		System.out.println ( "Writing the excel file..." );
 		
@@ -252,47 +341,10 @@ public class XmlCatalogueToExcel {
 			try {
 				fileOut.flush();
 				fileOut.close();
-				//workbook.dispose();
 				workbook.close();
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
 		}
-	}
-	
-	
-	/**
-	 * Filter the input xml into a smaller one to select only the relevant information
-	 * then convert the retrieved information into an excel sheet. We use an XSLT to
-	 * make the filter.
-	 * @param workbook, the workbook which will contain the new sheet
-	 * @param XsltFilename, the xslt transformation to be applied to the input xml file
-	 * @param outputName, the name of the output file
-	 */
-	private String filterXml ( Workbook workbook, String XsltFilename, String outputName ) {
-		
-		String outputFilename = outputName + ".xml";
-		
-		// filter the input xml into a smaller xml
-		XsltCompiler compiler = new XsltCompiler( inputXml, XsltFilename, 
-				outputFilename );
-		try {
-			compiler.compile();
-		} catch (TransformerException e) {
-			e.printStackTrace();
-			return null;
-		}
-		
-		return outputFilename;
-	}
-	
-	/**
-	 * Delete the file contained in the path
-	 * @param path
-	 * @return
-	 */
-	private boolean deleteFile ( String path ) {
-		File file = new File ( path );
-		return file.delete();
 	}
 }
