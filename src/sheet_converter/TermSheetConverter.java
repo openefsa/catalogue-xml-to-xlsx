@@ -40,6 +40,8 @@ public class TermSheetConverter extends ExtendedSheetConverter {
 		isImplicitAttribute = false;
 		this.hierarchySheet = hierarchySheet;
 		this.attributeSheet = attributeSheet;
+		this.assignment = new HierarchyAssignment();
+		this.groups = new ValuesGrouper();
 		
 	}
 
@@ -50,14 +52,14 @@ public class TermSheetConverter extends ExtendedSheetConverter {
 		// contained in the hierarchy or not)
 		if ( nodeName.equals( "hierarchyAssignment" ) ) {
 			isHierarchyAssignment = true;
-			assignment = new HierarchyAssignment();
+			assignment.reset();
 		}
 		
 		// if implicit attribute node start analyzing its data
 		// i.e. a node which says which attributes the term has
 		else if ( nodeName.equals( "implicitAttribute" ) ) {
 			isImplicitAttribute = true;
-			groups = new ValuesGrouper();
+			groups.reset();
 		}
 	}
 
@@ -90,7 +92,7 @@ public class TermSheetConverter extends ExtendedSheetConverter {
 			createCell( assignment.getReportableColumn(), row, assignment.getReportable() );
 			
 			isHierarchyAssignment = false;
-			assignment = null;
+			assignment.reset();
 			break;
 		
 			// if hierarchy code and we are inside a hierarchy assignment node =>
@@ -264,10 +266,17 @@ public class TermSheetConverter extends ExtendedSheetConverter {
 
 			// set as xml code the assignment fields because using the xml node here will imply override
 			// each header since the xml tags are always the same
-			headers.put( assignment.getFlagColumn(), new SheetHeader( columnIndex++, assignment.getFlagColumn() ) );
-			headers.put( assignment.getParentCodeColumn(), new SheetHeader( columnIndex++, assignment.getParentCodeColumn() ) );
-			headers.put( assignment.getOrderColumn(), new SheetHeader( columnIndex++, assignment.getOrderColumn() ) );
-			headers.put( assignment.getReportableColumn(), new SheetHeader( columnIndex++, assignment.getReportableColumn() ) );
+			headers.put( assignment.getFlagColumn(), 
+					new SheetHeader( columnIndex++, assignment.getFlagColumn() ) );
+			
+			headers.put( assignment.getParentCodeColumn(), 
+					new SheetHeader( columnIndex++, assignment.getParentCodeColumn() ) );
+			
+			headers.put( assignment.getOrderColumn(), 
+					new SheetHeader( columnIndex++, assignment.getOrderColumn() ) );
+			
+			headers.put( assignment.getReportableColumn(), 
+					new SheetHeader( columnIndex++, assignment.getReportableColumn() ) );
 		}
 		
 		return headers;

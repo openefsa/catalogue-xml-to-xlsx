@@ -23,6 +23,13 @@ public class ValuesGrouper {
 		this.data = data;
 	}
 	
+	public void reset() {
+		// reset content of string builder
+		values.setLength(0);
+		valuesCount = 0;
+		data = null;
+	}
+	
 	/**
 	 * Add a new group to the groups in a dollar separated way
 	 * @param group

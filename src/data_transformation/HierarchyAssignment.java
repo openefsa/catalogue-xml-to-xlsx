@@ -26,6 +26,16 @@ public class HierarchyAssignment {
 		this.reportable = reportable;
 	}
 	
+	/**
+	 * Reset the content of the group
+	 */
+	public void reset() {
+		hierarchyCode = null;
+		parentCode = null;
+		order = null;
+		reportable = null;
+	}
+	
 	public String getHierarchyCode() {
 		return hierarchyCode;
 	}

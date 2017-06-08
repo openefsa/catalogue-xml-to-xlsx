@@ -1,7 +1,6 @@
 package sheet_converter;
 
-import java.io.BufferedInputStream;
-import java.io.FileInputStream;
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -14,7 +13,7 @@ import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
@@ -192,7 +191,7 @@ public abstract class SheetConverter {
 	 * Create a new sheet into the workbook and insert the headers.
 	 * @return the new sheet
 	 */
-	public Sheet buildSheet( XSSFWorkbook workbook, String sheetName ) {
+	public Sheet buildSheet( Workbook workbook, String sheetName ) {
 
 		// create the sheet
 		sheet = workbook.createSheet( sheetName );
@@ -254,6 +253,7 @@ public abstract class SheetConverter {
 			// when a node is encountered
 			public void startElement(String uri, String localName,String qName, 
 					Attributes attributes) throws SAXException {
+
 				startAnalyzingNode( qName, attributes );
 			}
 
@@ -281,10 +281,9 @@ public abstract class SheetConverter {
 		// Parse the xml document
 		try {
 
-			// create a file input stream in order to save some RAM memory
-			BufferedInputStream buf = new BufferedInputStream( new FileInputStream(inputFilename) );
+			File file = new File ( inputFilename ); 
 
-			saxParser.parse(buf, handler);
+			saxParser.parse( file, handler );
 		} catch (SAXException | IOException e) {
 
 			System.err.println ( "Is there a sheet with no data? If it is so ignore this message, "
@@ -306,14 +305,14 @@ public abstract class SheetConverter {
 			isRootNode = true;
 			currentRow = createRow( sheet );
 			
-			// initialize the content
-			lastContent = new StringBuilder();
+			// reset the content
+			lastContent.setLength(0);
 		}
 
 		// if we are inside a root node tell to the child class to start
 		// processing the current node
 		//if ( isRootNode )
-			SheetConverter.this.startElement( currentRow, qName, attr );
+		SheetConverter.this.startElement( currentRow, qName, attr );
 	}
 	
 	/**
@@ -337,8 +336,8 @@ public abstract class SheetConverter {
 		// process the node and add the element to the excel
 		SheetConverter.this.addElement( currentRow, qName, lastContent.toString() );
 
-		// reset last content
-		lastContent = new StringBuilder();
+		// reset contents
+		lastContent.setLength(0);
 
 		// Diagnostic: print every printRowCount rows
 		if ( rowNum >= printCount + printRowCount ) {

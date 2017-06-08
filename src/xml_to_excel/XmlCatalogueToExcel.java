@@ -6,7 +6,10 @@ import java.io.IOException;
 
 import javax.xml.transform.TransformerException;
 
+import org.apache.poi.openxml4j.util.ZipSecureFile;
 import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import sheet_converter.AttributeSheetConverter;
@@ -18,11 +21,12 @@ import sheet_converter.TermSheetConverter;
 
 
 /**
- * Convert a catalogue from XML format to excel format. The excel contains 4 sheets:
+ * Convert a catalogue from XML format to excel format. The excel contains 5 sheets:
  * - catalogue
  * - hierarchy
  * - attribute
  * - term
+ * - releaseNotes
  * @author avonva
  *
  */
@@ -110,7 +114,6 @@ public class XmlCatalogueToExcel {
 	}
 	
 	
-	
 	/**
 	 * Constructor
 	 * Convert the catalogue from the .XML format to the .xlsx format (excel workbook)
@@ -128,10 +131,10 @@ public class XmlCatalogueToExcel {
 	 * @throws TransformerException
 	 */
 	public void convertXmlToExcel () throws TransformerException {
-		
+
 		// create a new workbook
 		XSSFWorkbook workbook = new XSSFWorkbook();
-		
+		//SXSSFWorkbook workbook = new SXSSFWorkbook();
 		
 		System.out.println ( "Creating catalogue sheet..." );
 		
@@ -232,6 +235,10 @@ public class XmlCatalogueToExcel {
 		try {
 
 			fileOut = new FileOutputStream( outputXlsx );
+			
+			// remove limits of dimensions for the workbook
+			ZipSecureFile.setMinInflateRatio( 0 );
+			
 			workbook.write( fileOut );
 			System.out.println ( "Done" );
 
@@ -243,7 +250,9 @@ public class XmlCatalogueToExcel {
 		
 			// close resources
 			try {
+				fileOut.flush();
 				fileOut.close();
+				//workbook.dispose();
 				workbook.close();
 			} catch (IOException e) {
 				e.printStackTrace();
@@ -260,7 +269,7 @@ public class XmlCatalogueToExcel {
 	 * @param XsltFilename, the xslt transformation to be applied to the input xml file
 	 * @param outputName, the name of the output file
 	 */
-	private String filterXml ( XSSFWorkbook workbook, String XsltFilename, String outputName ) {
+	private String filterXml ( Workbook workbook, String XsltFilename, String outputName ) {
 		
 		String outputFilename = outputName + ".xml";
 		
