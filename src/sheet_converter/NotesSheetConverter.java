@@ -19,13 +19,6 @@ import data_transformation.DateTrimmer;
  */
 public class NotesSheetConverter extends SheetConverter {
 
-	// nodes which need to be parsed
-	public static final String OP_DETAIL_NODE = "operationsDetail";
-	public static final String OP_INFO_NODE = "operationInfo";
-	public static final String OP_NAME_NODE = "operationName";
-	public static final String OP_DATE_NODE = "operationDate";
-	public static final String OP_GROUP_NODE = "operationGroupId";
-
 	// save the last name and date of an operation
 	private String lastName;
 	private Date lastDate;
@@ -48,10 +41,10 @@ public class NotesSheetConverter extends SheetConverter {
 		// create the cell in the current row for the
 		// two information (two different columns will
 		// be created
-		createCell( OP_NAME_NODE, row, lastName );
-		createCell( OP_DATE_NODE, row, lastDate );
-		createCell( OP_INFO_NODE, row, opInfo );
-		createCell( OP_GROUP_NODE, row, String.valueOf( groupId ) );
+		createCell( XmlNodes.OP_NAME, row, lastName );
+		createCell( XmlNodes.OP_DATE, row, lastDate );
+		createCell( XmlNodes.OP_INFO, row, opInfo );
+		createCell( XmlNodes.OP_GROUP, row, String.valueOf( groupId ) );
 	}
 	
 	@Override
@@ -60,12 +53,12 @@ public class NotesSheetConverter extends SheetConverter {
 		// if operation detail node, we need to read its attributes
 		// to get the operation name and the operation date information
 		switch ( nodeName ) {
-		case OP_DETAIL_NODE:
+		case XmlNodes.OP_DETAIL:
 
 			// get the node attributes
-			lastName = attr.getValue( OP_NAME_NODE );
+			lastName = attr.getValue( XmlNodes.OP_NAME );
 			
-			String opDate = attr.getValue( OP_DATE_NODE );
+			String opDate = attr.getValue( XmlNodes.OP_DATE );
 			lastDate = DateTrimmer.trimDate( opDate );
 
 			break;
@@ -79,12 +72,12 @@ public class NotesSheetConverter extends SheetConverter {
 
 			// operation info node, we group the operation info
 			// with values grouper
-		case OP_INFO_NODE:
+		case XmlNodes.OP_INFO:
 			addInfoRow( row, value );
 			break;
 			
 			// the group is finished
-		case OP_DETAIL_NODE:
+		case XmlNodes.OP_DETAIL:
 			lastDate = null;
 			lastName = null;
 			groupId++;
@@ -102,10 +95,10 @@ public class NotesSheetConverter extends SheetConverter {
 
 		HashMap<String, SheetHeader> headers = new HashMap<>();
 
-		headers.put( OP_NAME_NODE, new SheetHeader(0, OP_NAME_NODE) );
-		headers.put( OP_DATE_NODE, new SheetHeader(1, OP_DATE_NODE) );
-		headers.put( OP_INFO_NODE, new SheetHeader(2, OP_INFO_NODE ) );
-		headers.put( OP_GROUP_NODE, new SheetHeader(3, OP_GROUP_NODE ) );
+		headers.put( XmlNodes.OP_NAME, new SheetHeader(0, Headers.OP_NAME ) );
+		headers.put( XmlNodes.OP_DATE, new SheetHeader(1, Headers.OP_DATE ) );
+		headers.put( XmlNodes.OP_INFO, new SheetHeader(2, Headers.OP_INFO ) );
+		headers.put( XmlNodes.OP_GROUP, new SheetHeader(3, Headers.OP_GROUP ) );
 		return headers;
 	}
 }

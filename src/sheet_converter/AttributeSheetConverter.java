@@ -27,10 +27,10 @@ public class AttributeSheetConverter extends ExtendedSheetConverter {
 		
 		// these nodes were already processed by the parent call
 		switch ( nodeName ) {
-		case "validFrom":
-		case "validTo":
-		case "lastUpdate":
-		case "status":
+		case Headers.VALID_FROM:
+		case Headers.VALID_TO:
+		case Headers.LAST_UPDATE:
+		case Headers.STATUS:
 			return;
 		}
 		
@@ -52,29 +52,29 @@ public class AttributeSheetConverter extends ExtendedSheetConverter {
 
 		HashMap<String, SheetHeader> headers = new HashMap<>();
 		
-		headers.put("code", new SheetHeader(0, "code") );
-		headers.put("name", new SheetHeader(1, "name") );
-		headers.put("label", new SheetHeader(2, "label") );
-		headers.put("scopeNote", new SheetHeader(3, "scopeNote") );
-		headers.put("attributeReportable", new SheetHeader(4, "attributeReportable" ) );
-		headers.put("attributeVisible", new SheetHeader(5, "attributeVisible" ) );
-		headers.put("attributeSearchable", new SheetHeader(6, "attributeSearchable") );
-		headers.put("attributeOrder", new SheetHeader(7, "attributeOrder") );
-		headers.put("attributeType", new SheetHeader(8, "attributeType") );
-		headers.put("attributeMaxLength", new SheetHeader(9, "attributeMaxLength") );
-		headers.put("attributePrecision", new SheetHeader(10, "attributePrecision") );
-		headers.put("attributeScale", new SheetHeader(11, "attributeScale") );
-		headers.put("attributeCatalogueCode", new SheetHeader(12, "attributeCatalogueCode") );
-		headers.put("attributeSingleOrRepeatable", new SheetHeader(13, "attributeSingleOrRepeatable") );
-		headers.put("attributeInheritance", new SheetHeader(14, "attributeInheritance" ) );
-		headers.put("attributeUniqueness", new SheetHeader(15, "attributeUniqueness") );
-		headers.put("attributeTermCodeAlias", new SheetHeader(16, "attributeTermCodeAlias") );
-		headers.put("version", new SheetHeader(17, "version") );
-		headers.put("lastUpdate", new SheetHeader(18, "lastUpdate") );
-		headers.put("validFrom", new SheetHeader(19, "validFrom") );
-		headers.put("validTo", new SheetHeader(20, "validTo") );
-		headers.put("status", new SheetHeader(21, "status") );
-		headers.put("deprecated", new SheetHeader(22, "deprecated") );
+		headers.put( XmlNodes.CODE, new SheetHeader(0, Headers.CODE ) );
+		headers.put( XmlNodes.NAME, new SheetHeader(1, Headers.NAME ) );
+		headers.put( XmlNodes.LABEL, new SheetHeader(2, Headers.LABEL ) );
+		headers.put( XmlNodes.SCOPENOTE, new SheetHeader(3, Headers.SCOPENOTE ) );
+		headers.put( XmlNodes.ATTR_REPORT, new SheetHeader(4, Headers.ATTR_REPORT ) );
+		headers.put( XmlNodes.ATTR_VISIB, new SheetHeader(5, Headers.ATTR_VISIB ) );
+		headers.put( XmlNodes.ATTR_SEARCH, new SheetHeader(6, Headers.ATTR_SEARCH ) );
+		headers.put( XmlNodes.ATTR_ORDER, new SheetHeader(7, Headers.ATTR_ORDER ) );
+		headers.put( XmlNodes.ATTR_TYPE, new SheetHeader(8, Headers.ATTR_TYPE ) );
+		headers.put( XmlNodes.ATTR_MAX_LENGTH, new SheetHeader(9, Headers.ATTR_MAX_LENGTH ) );
+		headers.put( XmlNodes.ATTR_PRECISION, new SheetHeader(10, Headers.ATTR_PRECISION ) );
+		headers.put( XmlNodes.ATTR_SCALE, new SheetHeader(11, Headers.ATTR_SCALE ) );
+		headers.put( XmlNodes.ATTR_CAT_CODE, new SheetHeader(12, Headers.ATTR_CAT_CODE ) );
+		headers.put( XmlNodes.ATTR_SR, new SheetHeader(13, Headers.ATTR_SR ) );
+		headers.put( XmlNodes.ATTR_INHERIT, new SheetHeader(14, Headers.ATTR_INHERIT ) );
+		headers.put( XmlNodes.ATTR_UNIQUE, new SheetHeader(15, Headers.ATTR_UNIQUE ) );
+		headers.put( XmlNodes.ATTR_ALIAS, new SheetHeader(16, Headers.ATTR_ALIAS ) );
+		headers.put( XmlNodes.VERSION, new SheetHeader(17, Headers.VERSION ) );
+		headers.put( XmlNodes.LAST_UPDATE, new SheetHeader(18, Headers.LAST_UPDATE ) );
+		headers.put( XmlNodes.VALID_FROM, new SheetHeader(19, Headers.VALID_FROM ) );
+		headers.put( XmlNodes.VALID_TO, new SheetHeader(20, Headers.VALID_TO ) );
+		headers.put( XmlNodes.STATUS, new SheetHeader(21, Headers.STATUS ) );
+		headers.put( XmlNodes.DEPRECATED, new SheetHeader(22, Headers.DEPRECATED ) );
 		return headers;
 	}
 }

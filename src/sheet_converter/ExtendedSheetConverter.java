@@ -28,10 +28,10 @@ public abstract class ExtendedSheetConverter extends SheetConverter {
 		// trim dates only to year month and day
 		switch ( nodeName ) {
 		
-		case "validFrom":
-		case "validTo":
-		case "lastUpdate":
-		case "versionDate":
+		case XmlNodes.VALID_FROM:
+		case XmlNodes.VALID_TO:
+		case XmlNodes.LAST_UPDATE:
+		case XmlNodes.NOTES_VERSION_DATE:
 			
 			Date date = DateTrimmer.trimDate( value );
 			
@@ -40,10 +40,10 @@ public abstract class ExtendedSheetConverter extends SheetConverter {
 			break;
 
 			// set the deprecated column according to the status
-		case "status":
+		case XmlNodes.STATUS:
 
 			// create the deprecated cell, if the value is DEPRECATED, then set to 1, otherwise 0
-			createCell ( "deprecated", row, BooleanConverter.equals( value, "DEPRECATED" ) );
+			createCell ( Headers.DEPRECATED, row, BooleanConverter.equals( value, SpecialValues.STATUS_DEPRECATED ) );
 			
 			// create the cell for the status
 			createCell ( nodeName, row, value );

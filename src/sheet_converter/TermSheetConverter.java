@@ -50,14 +50,14 @@ public class TermSheetConverter extends ExtendedSheetConverter {
 		
 		// if a node hierarchy assignment starts (i.e. a node which says if the term is
 		// contained in the hierarchy or not)
-		if ( nodeName.equals( "hierarchyAssignment" ) ) {
+		if ( nodeName.equals( XmlNodes.HIER_ASSIGNMENT ) ) {
 			isHierarchyAssignment = true;
 			assignment.reset();
 		}
 		
 		// if implicit attribute node start analyzing its data
 		// i.e. a node which says which attributes the term has
-		else if ( nodeName.equals( "implicitAttribute" ) ) {
+		else if ( nodeName.equals( XmlNodes.IMPLICIT_ATTR ) ) {
 			isImplicitAttribute = true;
 			groups.reset();
 		}
@@ -71,10 +71,10 @@ public class TermSheetConverter extends ExtendedSheetConverter {
 		
 		// these nodes were already processed by the parent call
 		switch ( nodeName ) {
-		case "validFrom":
-		case "validTo":
-		case "lastUpdate":
-		case "status":
+		case XmlNodes.VALID_FROM:
+		case XmlNodes.VALID_TO:
+		case XmlNodes.LAST_UPDATE:
+		case XmlNodes.STATUS:
 			return;
 		}
 		
@@ -83,7 +83,7 @@ public class TermSheetConverter extends ExtendedSheetConverter {
 		
 		// if we are closing an hierarchy assignment field then we
 		// have to add the retrieved hierarchy assignment data to the excel
-		case "hierarchyAssignment":
+		case XmlNodes.HIER_ASSIGNMENT:
 			
 			// create the cells for the current hierarchy assignment in the right columns
 			createCell( assignment.getFlagColumn(), row, assignment.getFlag() );
@@ -97,32 +97,32 @@ public class TermSheetConverter extends ExtendedSheetConverter {
 		
 			// if hierarchy code and we are inside a hierarchy assignment node =>
 			// we start collecting the data related to the term hierarchy assignment
-		case  "hierarchyCode":
+		case  XmlNodes.ASS_HIER_CODE:
 			if ( isHierarchyAssignment ) {
 				
 				// if we have set a master hierarchy code and the hierarchy code is 
 				// actually the master hierarchy code, we set as code "master"
 				if ( masterHierarchyCode != null && masterHierarchyCode.equals( value ) )
-					assignment.setHierarchyCode( "master" );
+					assignment.setHierarchyCode( Headers.PREFIX_MASTER_CODE );
 				else
 					assignment.setHierarchyCode( value );
 			}
 			break;
 			
 			// same as above
-		case "parentCode":
+		case XmlNodes.ASS_PARENT_CODE:
 			if ( isHierarchyAssignment )
 				assignment.setParentCode( value );
 			break;
 			
 			// same as above
-		case "order":
+		case XmlNodes.ASS_ORDER:
 			if ( isHierarchyAssignment )
 				assignment.setOrder( value );
 			break;
 			
 			// same as above
-		case "reportable":
+		case XmlNodes.ASS_REPORT:
 			if ( isHierarchyAssignment ) {
 				
 				// convert boolean true false into 1/0
@@ -135,7 +135,7 @@ public class TermSheetConverter extends ExtendedSheetConverter {
 			// if we are closing an implicit attribute node => finish analyzing data and save values
 			// we get the attribute code from the groups data
 			// we get all the attribute values from the groups getGroups
-		case "implicitAttribute":
+		case XmlNodes.IMPLICIT_ATTR:
 			
 			if ( isImplicitAttribute ) {
 				createCell( (String) groups.getData(), row, groups.getCompactValues() );
@@ -146,13 +146,13 @@ public class TermSheetConverter extends ExtendedSheetConverter {
 			
 			// if we are in the implicit attribute node and we found the attribute
 			// code field then we save the code into the groups
-		case "attributeCode":
+		case XmlNodes.IMPLICIT_CODE:
 			if (isImplicitAttribute )
 				groups.setData( value );
 			break;
 			
 			// if attribute value save the value in the groups
-		case "attributeValue":
+		case XmlNodes.IMPLICIT_VALUE:
 			if (isImplicitAttribute )
 				groups.addValue( value );
 			break;
@@ -190,9 +190,9 @@ public class TermSheetConverter extends ExtendedSheetConverter {
 		HashMap<String, String> attrs = new HashMap<>();
 		
 		// get the names and the types of the attributes
-		ArrayList<String> codes = SheetConverter.getSheetColumn( attrSheet, "code" );
-		ArrayList<String> names = SheetConverter.getSheetColumn( attrSheet, "name" );
-		ArrayList<String> types = SheetConverter.getSheetColumn( attrSheet, "attributeType" );
+		ArrayList<String> codes = SheetConverter.getSheetColumn( attrSheet, Headers.CODE );
+		ArrayList<String> names = SheetConverter.getSheetColumn( attrSheet, Headers.NAME );
+		ArrayList<String> types = SheetConverter.getSheetColumn( attrSheet, Headers.ATTR_TYPE );
 		
 		if ( codes.size() != names.size() || names.size() != types.size() ) {
 			System.err.println ( "wrong number of rows for attribute sheet" );
@@ -204,7 +204,7 @@ public class TermSheetConverter extends ExtendedSheetConverter {
 			
 			// if the type is not a catalogue type add the name
 			// to the list identified by the code
-			if ( !types.get(i).equals( "catalogue" ) ) {
+			if ( !types.get(i).equals( SpecialValues.ATTR_CAT_TYPE ) ) {
 				attrs.put( codes.get(i), names.get(i) );
 			}
 		}
@@ -224,16 +224,16 @@ public class TermSheetConverter extends ExtendedSheetConverter {
 		// the order of headers in the headers array reflect
 		// the order of the excel columns
 		
-		headers.put("termCode", new SheetHeader(columnIndex++, "termCode") );
-		headers.put("termExtendedName", new SheetHeader(columnIndex++, "termExtendedName") );
-		headers.put("termShortName", new SheetHeader(columnIndex++, "termShortName") );
-		headers.put("termScopeNote", new SheetHeader(columnIndex++, "termScopeNote") );
-		headers.put("deprecated", new SheetHeader(columnIndex++, "deprecated") );
-		headers.put("version", new SheetHeader(columnIndex++, "version") );
-		headers.put("lastUpdate", new SheetHeader(columnIndex++, "lastUpdate") );
-		headers.put("validFrom", new SheetHeader(columnIndex++, "validFrom") );
-		headers.put("validTo", new SheetHeader(columnIndex++, "validTo") );
-		headers.put("status", new SheetHeader(columnIndex++, "status") );
+		headers.put(XmlNodes.TERM_CODE, new SheetHeader(columnIndex++, Headers.TERM_CODE) );
+		headers.put(XmlNodes.TERM_EXT_NAME, new SheetHeader(columnIndex++, Headers.TERM_EXT_NAME) );
+		headers.put(XmlNodes.TERM_SHORT_NAME, new SheetHeader(columnIndex++, Headers.TERM_SHORT_NAME) );
+		headers.put(XmlNodes.TERM_SCOPENOTE, new SheetHeader(columnIndex++, Headers.TERM_SCOPENOTE) );
+		headers.put(XmlNodes.DEPRECATED, new SheetHeader(columnIndex++, Headers.DEPRECATED) );
+		headers.put(XmlNodes.VERSION, new SheetHeader(columnIndex++, Headers.VERSION) );
+		headers.put(XmlNodes.LAST_UPDATE, new SheetHeader(columnIndex++, Headers.LAST_UPDATE) );
+		headers.put(XmlNodes.VALID_FROM, new SheetHeader(columnIndex++, Headers.VALID_FROM) );
+		headers.put(XmlNodes.VALID_TO, new SheetHeader(columnIndex++, Headers.VALID_TO) );
+		headers.put(XmlNodes.STATUS, new SheetHeader(columnIndex++, Headers.STATUS) );
 		
 		//
 		// Add the attributes columns to the term
@@ -252,7 +252,7 @@ public class TermSheetConverter extends ExtendedSheetConverter {
 		//
 		
 		// for each hierarchy code we put columns to the term sheet
-		for ( String code : getSheetColumn( hierarchySheet, "code" ) ) {
+		for ( String code : getSheetColumn( hierarchySheet, Headers.CODE ) ) {
 			
 			// we create a hierarchy assignment in order to automatically
 			// get the right headers column names starting from the hierarchy code
@@ -260,7 +260,7 @@ public class TermSheetConverter extends ExtendedSheetConverter {
 			
 			// if master hierarchy set the hierarchy code to master
 			if ( code.equals( masterHierarchyCode ) )
-				assignment.setHierarchyCode( "master" );
+				assignment.setHierarchyCode( Headers.PREFIX_MASTER_CODE );
 			else
 				assignment.setHierarchyCode( code );
 

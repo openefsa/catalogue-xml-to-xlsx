@@ -44,7 +44,9 @@ public abstract class ConversionPerformer {
 		SheetConverter converter = getConverter( outputFilename );
 
 		// create the empty sheet
-		converter.buildSheet( workbook, sheetname );
+		sheet = converter.buildSheet( workbook, sheetname );
+		
+		makePreliminarOperations( converter, sheet );
 		
 		// parse the xml and insert the data
 		converter.parse();
@@ -108,4 +110,12 @@ public abstract class ConversionPerformer {
 	 * @return
 	 */
 	public abstract SheetConverter getConverter( String inputFilename );
+	
+	/**
+	 * Make preliminary operations on the sheet before starting adding
+	 * data. Note that here the sheet is already created with headers.
+	 * @param converter
+	 * @param sheet
+	 */
+	public abstract void makePreliminarOperations ( SheetConverter converter, Sheet sheet );
 }

@@ -31,23 +31,24 @@ public class CatalogueSheetConverter extends ExtendedSheetConverter {
 		// if we found a catalogue groups element
 		switch ( nodeName ) {
 		
-		case "catalogueGroups":
+		case XmlNodes.CAT_GROUPS:
 			isGroupNode = true;
 			group = new ValuesGrouper();
 			break;
 			
-		case "releaseNotes":
+		case XmlNodes.RELEASE_NOTES:
 			parsingNotes = true;
 			break;
 			
-		case "version":
+		case XmlNodes.VERSION:
 			
 			// if release note version, get its attribute
 			// we need to handle the nodeName in an exceptional
 			// way, since the header "version" is already used
 			// by the catalogue version
 			if ( parsingNotes )
-				createCell( "noteInternalVersion", row, attr.getValue( "internalVersion" ) );
+				createCell( XmlNodes.NOTES_VERSION, row, attr.getValue( 
+						XmlNodes.NOTES_VERSION_ATTRIBUTE_NAME ) );
 
 			break;
 		default:
@@ -64,16 +65,16 @@ public class CatalogueSheetConverter extends ExtendedSheetConverter {
 		
 		// these nodes were already processed by the parent call
 		switch ( nodeName ) {
-		case "validFrom":
-		case "validTo":
-		case "lastUpdate":
-		case "status":
+		case XmlNodes.VALID_FROM:
+		case XmlNodes.VALID_TO:
+		case XmlNodes.LAST_UPDATE:
+		case XmlNodes.STATUS:
 			return;
 		}
 		
 		// process node
 		switch ( nodeName ) {
-		case "catalogueGroups":
+		case XmlNodes.CAT_GROUPS:
 			// add as groups all the groups which were found, $ separated
 			if ( isGroupNode )
 				createCell( nodeName, row, group.getCompactValues() );
@@ -82,18 +83,18 @@ public class CatalogueSheetConverter extends ExtendedSheetConverter {
 			group = null;
 			break;
 			
-		case "catalogueGroup":
+		case XmlNodes.CAT_GROUP:
 			
 			if ( isGroupNode )
 				group.addValue( value );
 			break;
 
 			// end release note parsing
-		case "releaseNotes":
+		case XmlNodes.RELEASE_NOTES:
 			parsingNotes = false;
 			break;
 			
-		case "version":
+		case XmlNodes.VERSION:
 			// create the version cell only for the catalogue version
 			if ( !parsingNotes )
 				createCell( nodeName, row, value );
@@ -118,28 +119,28 @@ public class CatalogueSheetConverter extends ExtendedSheetConverter {
 		// prepare headers for the catalogue sheet
 		// the order of headers in the headers array reflect
 		// the order of the excel columns
-		headers.put("code", new SheetHeader(0, "code") );
-		headers.put("name", new SheetHeader(1, "name") );
-		headers.put("label", new SheetHeader(2, "label") );
-		headers.put("scopeNote", new SheetHeader(3, "scopeNote") );
-		headers.put("termCodeMask", new SheetHeader(4, "termCodeMask") );
-		headers.put("termCodeLength", new SheetHeader(5, "termCodeLength") );
-		headers.put("termMinCode", new SheetHeader(6, "termMinCode") );
-		headers.put("acceptNonStandardCodes", new SheetHeader(7, "acceptNonStandardCodes") );
-		headers.put("generateMissingCodes", new SheetHeader(8, "generateMissingCodes") );
-		headers.put("version", new SheetHeader(9, "version") );
-		headers.put("catalogueGroups", new SheetHeader(10, "catalogueGroups") );
-		headers.put("lastUpdate", new SheetHeader(11, "lastUpdate") );
-		headers.put("validFrom", new SheetHeader(12, "validFrom") );
-		headers.put("validTo", new SheetHeader(13, "validTo") );
-		headers.put("status", new SheetHeader(14, "status") );
-		headers.put("deprecated", new SheetHeader(15, "deprecated") );
+		headers.put( XmlNodes.CODE, new SheetHeader(0, Headers.CODE) );
+		headers.put( XmlNodes.NAME, new SheetHeader(1, Headers.NAME) );
+		headers.put( XmlNodes.LABEL, new SheetHeader(2, Headers.LABEL) );
+		headers.put( XmlNodes.SCOPENOTE, new SheetHeader(3, Headers.SCOPENOTE) );
+		headers.put( XmlNodes.CAT_CODE_MASK, new SheetHeader(4, Headers.CAT_CODE_MASK) );
+		headers.put( XmlNodes.CAT_CODE_LENGTH, new SheetHeader(5, Headers.CAT_CODE_LENGTH) );
+		headers.put( XmlNodes.CAT_MIN_CODE, new SheetHeader(6, Headers.CAT_MIN_CODE) );
+		headers.put( XmlNodes.CAT_ACCEPT_NOT_STD, new SheetHeader(7, Headers.CAT_ACCEPT_NOT_STD) );
+		headers.put( XmlNodes.CAT_GEN_MISSING, new SheetHeader(8, Headers.CAT_GEN_MISSING) );
+		headers.put( XmlNodes.VERSION, new SheetHeader(9, Headers.VERSION) );
+		headers.put( XmlNodes.CAT_GROUPS, new SheetHeader(10, Headers.CAT_GROUPS) );
+		headers.put( XmlNodes.LAST_UPDATE, new SheetHeader(11, Headers.LAST_UPDATE) );
+		headers.put( XmlNodes.VALID_FROM, new SheetHeader(12, Headers.VALID_FROM) );
+		headers.put( XmlNodes.VALID_TO, new SheetHeader(13, Headers.VALID_TO) );
+		headers.put( XmlNodes.STATUS, new SheetHeader(14, Headers.STATUS) );
+		headers.put( XmlNodes.DEPRECATED, new SheetHeader(15, Headers.DEPRECATED) );
 		
 		// release note information (they will be inserted into the catalogue sheet)
-		headers.put("description", new SheetHeader(16, "noteDescription") );
-		headers.put("versionDate", new SheetHeader(17, "noteVersionDate") );
-		headers.put("noteInternalVersion", new SheetHeader(18, "noteInternalVersion") );
-		headers.put("internalVersionNote", new SheetHeader(19, "internalVersionNote") );
+		headers.put( XmlNodes.NOTES_DESCRIPTION, new SheetHeader(16, Headers.NOTES_DESCRIPTION) );
+		headers.put( XmlNodes.NOTES_DATE, new SheetHeader(17, Headers.NOTES_DATE) );
+		headers.put( XmlNodes.NOTES_VERSION, new SheetHeader(18, Headers.NOTES_VERSION) );
+		headers.put( XmlNodes.NOTES_NOTE, new SheetHeader(19, Headers.NOTES_NOTE) );
 		return headers;
 	}
 }

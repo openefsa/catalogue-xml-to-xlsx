@@ -17,13 +17,13 @@ import data_transformation.ValuesGrouper;
 public class HierarchySheetConverter extends ExtendedSheetConverter {
 
 	private boolean isGroupNode;  // true if we are in a hierarchyGroups node
-	ValuesGrouper group;          // used to group the values of the hierarchy groups into a single one
-
+	private ValuesGrouper group;          // used to group the values of the hierarchy groups into a single one
+	
 	public HierarchySheetConverter( String inputFilename, String rootNode ) {
 		super(inputFilename, rootNode );
 		isGroupNode = false;
 	}
-
+	
 	/**
 	 * Add the master hierarchy using the catalogue sheet data ( standard rule of the DCF )
 	 * In fact in the XML the master hierarchy is not present, therefore we need to create it
@@ -34,21 +34,21 @@ public class HierarchySheetConverter extends ExtendedSheetConverter {
 		Row row = createRow( getSheet() );
 
 		// get the information from the catalogue sheet and add them to the master hierarchy
-		addCatFieldToMaster ( catSheet, row, "code" );
-		addCatFieldToMaster ( catSheet, row, "name" );
-		addCatFieldToMaster ( catSheet, row, "label" );
-		addCatFieldToMaster ( catSheet, row, "scopeNote" );
-		addCatFieldToMaster ( catSheet, row, "version" );
-		addCatFieldToMaster ( catSheet, row, "lastUpdate" );
-		addCatFieldToMaster ( catSheet, row, "validFrom" );
-		addCatFieldToMaster ( catSheet, row, "status" );
+		addCatFieldToMaster ( catSheet, row, Headers.CODE );
+		addCatFieldToMaster ( catSheet, row, Headers.NAME );
+		addCatFieldToMaster ( catSheet, row, Headers.LABEL );
+		addCatFieldToMaster ( catSheet, row, Headers.SCOPENOTE );
+		addCatFieldToMaster ( catSheet, row, Headers.VERSION );
+		addCatFieldToMaster ( catSheet, row, Headers.LAST_UPDATE );
+		addCatFieldToMaster ( catSheet, row, Headers.VALID_FROM );
+		addCatFieldToMaster ( catSheet, row, Headers.STATUS );
 
 		// here there is a differences between the names => we need to specify them
-		addCatFieldToMaster ( catSheet, row, "catalogueGroups", "hierarchyGroups", true );
+		addCatFieldToMaster ( catSheet, row, Headers.HIER_GROUPS, XmlNodes.HIER_GROUPS, true );
 
 		// add default values for applicability and order
-		addElement( row, "hierarchyApplicability", "both" );
-		addElement( row, "hierarchyOrder", "0" );
+		addElement( row, XmlNodes.HIER_APPL, SpecialValues.ATTR_APPL_BOTH );
+		addElement( row, XmlNodes.HIER_ORDER, SpecialValues.MASTER_ORDER );
 	}
 
 	/**
@@ -97,7 +97,7 @@ public class HierarchySheetConverter extends ExtendedSheetConverter {
 	public void startElement(Row row, String nodeName, Attributes attr) {
 
 		// if we found a hierarchy groups element
-		if ( nodeName.equals( "hierarchyGroups" ) ) {
+		if ( nodeName.equals( XmlNodes.HIER_GROUPS ) ) {
 			isGroupNode = true;
 			group = new ValuesGrouper();
 		}
@@ -111,10 +111,10 @@ public class HierarchySheetConverter extends ExtendedSheetConverter {
 		
 		// these nodes were already processed by the parent call
 		switch ( nodeName ) {
-		case "validFrom":
-		case "validTo":
-		case "lastUpdate":
-		case "status":
+		case XmlNodes.VALID_FROM:
+		case XmlNodes.VALID_TO:
+		case XmlNodes.LAST_UPDATE:
+		case XmlNodes.STATUS:
 			return;
 		}
 		
@@ -122,7 +122,7 @@ public class HierarchySheetConverter extends ExtendedSheetConverter {
 
 			// we are closing a hierarchy groups => we save all the 
 			// group values into the cell
-		case "hierarchyGroups":
+		case XmlNodes.HIER_GROUPS:
 			// add as groups all the groups which were found, $ separated
 			if ( isGroupNode )
 				createCell( nodeName, row, group.getCompactValues() );
@@ -133,7 +133,7 @@ public class HierarchySheetConverter extends ExtendedSheetConverter {
 
 			// if we find a hierarchyGroup node and we are indeed inside
 			// a HierarchyGroups node => add the value
-		case "hierarchyGroup":
+		case XmlNodes.HIER_GROUP:
 
 			if ( isGroupNode )
 				group.addValue( value );
@@ -151,23 +151,24 @@ public class HierarchySheetConverter extends ExtendedSheetConverter {
 	 * Get the headers of the catalogue sheet
 	 * @return
 	 */
+	@Override
 	public HashMap<String, SheetHeader> getHeaders() {
 
 		HashMap<String, SheetHeader> headers = new HashMap<>();
 
-		headers.put("code", new SheetHeader(0, "code") );
-		headers.put("name", new SheetHeader(1, "name") );
-		headers.put("label", new SheetHeader(2, "label") );
-		headers.put("scopeNote", new SheetHeader(3, "scopeNote" ) );
-		headers.put("hierarchyApplicability", new SheetHeader(4, "hierarchyApplicability") );
-		headers.put("hierarchyOrder", new SheetHeader(5, "hierarchyOrder") );
-		headers.put("version", new SheetHeader(6, "version") );
-		headers.put("lastUpdate", new SheetHeader(7, "lastUpdate") );
-		headers.put("validFrom", new SheetHeader(8, "validFrom") );
-		headers.put("validTo", new SheetHeader(9, "validTo") );
-		headers.put("status", new SheetHeader(10, "status") );
-		headers.put("deprecated", new SheetHeader(11, "deprecated") );
-		headers.put("hierarchyGroups", new SheetHeader(12, "hierarchyGroups") );
+		headers.put( XmlNodes.CODE, new SheetHeader(0, Headers.CODE ) );
+		headers.put( XmlNodes.NAME, new SheetHeader(1, Headers.NAME ) );
+		headers.put( XmlNodes.LABEL, new SheetHeader(2, Headers.LABEL ) );
+		headers.put( XmlNodes.SCOPENOTE, new SheetHeader(3, Headers.SCOPENOTE ) );
+		headers.put( XmlNodes.HIER_APPL, new SheetHeader(4, Headers.HIER_APPL ) );
+		headers.put( XmlNodes.HIER_ORDER, new SheetHeader(5, Headers.HIER_ORDER ) );
+		headers.put( XmlNodes.VERSION, new SheetHeader(6, Headers.VERSION ) );
+		headers.put( XmlNodes.LAST_UPDATE, new SheetHeader(7, Headers.LAST_UPDATE ) );
+		headers.put( XmlNodes.VALID_FROM, new SheetHeader(8, Headers.VALID_FROM ) );
+		headers.put( XmlNodes.VALID_TO, new SheetHeader(9, Headers.VALID_TO ) );
+		headers.put( XmlNodes.STATUS, new SheetHeader(10, Headers.STATUS ) );
+		headers.put( XmlNodes.DEPRECATED, new SheetHeader(11, Headers.DEPRECATED ) );
+		headers.put( XmlNodes.HIER_GROUPS, new SheetHeader(12, Headers.HIER_GROUPS ) );
 
 		return headers;
 	}

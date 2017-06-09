@@ -1,5 +1,7 @@
 package data_transformation;
 
+import sheet_converter.Headers;
+
 /**
  * Model a <hierarchyAssignment> xml node and its children
  * concerning the catalogue xml data related to terms
@@ -62,7 +64,7 @@ public class HierarchyAssignment {
 	 * @return
 	 */
 	public String getFlagColumn() {
-		return hierarchyCode + "Flag";
+		return hierarchyCode + Headers.SUFFIX_FLAG;
 	}
 	
 	/**
@@ -70,7 +72,7 @@ public class HierarchyAssignment {
 	 * @return
 	 */
 	public String getParentCodeColumn() {
-		return hierarchyCode + "ParentCode";
+		return hierarchyCode + Headers.SUFFIX_PARENT_CODE;
 	}
 	
 	/**
@@ -78,7 +80,7 @@ public class HierarchyAssignment {
 	 * @return
 	 */
 	public String getOrderColumn() {
-		return hierarchyCode + "Order";
+		return hierarchyCode + Headers.SUFFIX_ORDER;
 	}
 	
 	/**
@@ -86,7 +88,7 @@ public class HierarchyAssignment {
 	 * @return
 	 */
 	public String getReportableColumn() {
-		return hierarchyCode + "Reportable";
+		return hierarchyCode + Headers.SUFFIX_REPORT;
 	}
 	
 	
