@@ -6,6 +6,8 @@ import org.apache.poi.ss.usermodel.Row;
 
 import data_transformation.BooleanConverter;
 import data_transformation.DateTrimmer;
+import naming_convention.Headers;
+import naming_convention.SpecialValues;
 
 /**
  * This class adds some peculiar processes to the sheet converter, in order to make it

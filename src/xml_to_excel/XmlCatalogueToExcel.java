@@ -9,9 +9,9 @@ import org.apache.poi.openxml4j.util.ZipSecureFile;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 
+import naming_convention.Headers;
 import sheet_converter.AttributeSheetConverter;
 import sheet_converter.CatalogueSheetConverter;
-import sheet_converter.Headers;
 import sheet_converter.HierarchySheetConverter;
 import sheet_converter.NotesSheetConverter;
 import sheet_converter.SheetConverter;
@@ -135,8 +135,6 @@ public class XmlCatalogueToExcel {
 
 			@Override
 			public void makePreliminarOperations(SheetConverter converter, Sheet sheet) {
-
-				System.out.println( "sheet " + cat.getSheet() );
 				
 				if ( converter instanceof HierarchySheetConverter )
 					((HierarchySheetConverter) converter).addMasterHierarchy( cat.getSheet() );

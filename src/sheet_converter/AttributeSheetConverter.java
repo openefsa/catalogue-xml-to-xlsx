@@ -5,6 +5,9 @@ import java.util.HashMap;
 import org.apache.poi.ss.usermodel.Row;
 import org.xml.sax.Attributes;
 
+import naming_convention.Headers;
+import sheet_header.SheetHeader;
+
 /**
  * Parse the catalogue xml data related to attributes and create the attribute sheet
  * @author avonva

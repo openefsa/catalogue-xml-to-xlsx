@@ -1,4 +1,4 @@
-package sheet_converter;
+package sheet_header;
 
 /**
  * Model a sheet header. In particular we need the information related to:

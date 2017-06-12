@@ -1,6 +1,6 @@
 package data_transformation;
 
-import sheet_converter.Headers;
+import naming_convention.Headers;
 
 /**
  * Model a <hierarchyAssignment> xml node and its children

@@ -8,6 +8,9 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.xml.sax.Attributes;
 
 import data_transformation.ValuesGrouper;
+import naming_convention.Headers;
+import naming_convention.SpecialValues;
+import sheet_header.SheetHeader;
 
 /**
  * Parse the catalogue xml data related to hierarchies and create the hierarchy sheet

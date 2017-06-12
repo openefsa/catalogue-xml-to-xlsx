@@ -10,6 +10,9 @@ import org.xml.sax.Attributes;
 import data_transformation.BooleanConverter;
 import data_transformation.HierarchyAssignment;
 import data_transformation.ValuesGrouper;
+import naming_convention.Headers;
+import naming_convention.SpecialValues;
+import sheet_header.SheetHeader;
 
 /**
  * Used to convert the xml catalogue data related to terms into a term sheet

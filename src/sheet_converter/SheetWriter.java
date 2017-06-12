@@ -7,6 +7,8 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 
+import sheet_header.SheetHeader;
+
 /**
  * This class handle the writing procedure of an excel sheet. Extend this class and provide the
  * methods getHeaders and insertData to have a complete sheet writer.

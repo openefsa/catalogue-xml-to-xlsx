@@ -1,4 +1,4 @@
-package sheet_converter;
+package naming_convention;
 
 /**
  * This class contains all the special values which

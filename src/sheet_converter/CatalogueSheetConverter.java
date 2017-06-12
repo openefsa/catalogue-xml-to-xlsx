@@ -6,6 +6,8 @@ import org.apache.poi.ss.usermodel.Row;
 import org.xml.sax.Attributes;
 
 import data_transformation.ValuesGrouper;
+import naming_convention.Headers;
+import sheet_header.SheetHeader;
 
 /**
  * Xml Converter for catalogue sheet. We parse the xml to retrieve the catalogue data.

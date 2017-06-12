@@ -2,6 +2,9 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="xslt"/>
+	<classpathentry kind="src" path="user-interface"/>
+	<classpathentry kind="src" path="naming_convention"/>
+	<classpathentry kind="src" path="sheet-header"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
 	<classpathentry kind="lib" path="lib/poi-3.13-20150929.jar"/>
 	<classpathentry kind="lib" path="lib/poi-ooxml-3.13-20150929.jar"/>
