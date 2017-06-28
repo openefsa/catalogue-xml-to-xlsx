@@ -16,6 +16,7 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
 import org.xml.sax.helpers.DefaultHandler;
 
 import data_transformation.DateTrimmer;
@@ -285,10 +286,13 @@ public abstract class SheetConverter {
 			File file = new File ( inputFilename ); 
 
 			saxParser.parse( file, handler );
-		} catch (SAXException | IOException e) {
 
-			System.err.println ( "Is there a sheet with no data? If it is so ignore this message, "
-					+ "otherwise check the xml correctness." );
+		} catch ( SAXParseException e ) {
+			// sheet with no data => an exception is thrown
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (SAXException e) {
+			e.printStackTrace();
 		}
 	}
 

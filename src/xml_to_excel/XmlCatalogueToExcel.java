@@ -101,7 +101,7 @@ public class XmlCatalogueToExcel {
 
 		// create a new workbook
 		SXSSFWorkbook workbook = new SXSSFWorkbook();
-		
+
 		// convert catalogue sheet
 		ConversionPerformer cat = new ConversionPerformer( workbook, 
 				inputXml, CATALOGUE_XSLT_NAME ) {
@@ -218,7 +218,7 @@ public class XmlCatalogueToExcel {
 		try {
 
 			fileOut = new FileOutputStream( outputXlsx );
-			
+
 			// remove limits of dimensions for the workbook
 			ZipSecureFile.setMinInflateRatio( 0 );
 			

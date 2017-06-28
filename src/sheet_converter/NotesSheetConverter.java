@@ -37,9 +37,6 @@ public class NotesSheetConverter extends SheetConverter {
 	 */
 	private void addInfoRow( Row row, String opInfo ) {
 		
-		// create a new row for each operationsDetail node
-		//Row row = createRow( getSheet() );
-		
 		// create the cell in the current row for the
 		// two information (two different columns will
 		// be created

@@ -1,6 +1,8 @@
 package xml_to_excel;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 
 import javax.xml.transform.Source;
 import javax.xml.transform.Transformer;
@@ -12,9 +14,9 @@ import javax.xml.transform.stream.StreamSource;
 
 public class XsltCompiler {
 
-	String inputFilename;
-	String xsltFilename;
-	String outputFilename;
+	private String inputFilename;
+	private String xsltFilename;
+	private String outputFilename;
 	
 	/**
 	 * Apply a XSLT transformation to the XLM input file. The created XML output filename is
@@ -37,16 +39,26 @@ public class XsltCompiler {
 	 */
 	public void compile () throws TransformerException {
 		
+		// prepare xslt source file
+		InputStream stream = this.getClass().getClassLoader().getResourceAsStream( xsltFilename );
+		Source xslt = new StreamSource( stream );
+
 		// Get a factory instance to apply the xslt
 		TransformerFactory factory = TransformerFactory.newInstance();
 		
-		Source xslt = new StreamSource( this.getClass().getClassLoader().getResourceAsStream( xsltFilename ) );
-
 		// set the transformer
 		Transformer transformer = factory.newTransformer( xslt );
 
 		// transform the input with the xslt and create the output
-		Source text = new StreamSource( new File( inputFilename ) );
-		transformer.transform( text, new StreamResult( new File( outputFilename ) ) );
+		StreamSource text = new StreamSource( new File( inputFilename ) );
+		StreamResult output = new StreamResult( new File( outputFilename ) );
+		transformer.transform( text, output );
+
+		try {
+			transformer.reset();
+			stream.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 }

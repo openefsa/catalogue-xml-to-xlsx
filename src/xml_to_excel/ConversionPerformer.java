@@ -1,6 +1,9 @@
 package xml_to_excel;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 import javax.xml.transform.TransformerException;
 
@@ -11,6 +14,9 @@ import sheet_converter.SheetConverter;
 
 public abstract class ConversionPerformer {
 
+	private static final String TEMP_FOLDER = "TempFiles" 
+			+ System.getProperty("file.separator");
+	
 	private Workbook workbook;
 	private String inputXml;
 	private String XsltFilename;
@@ -31,29 +37,38 @@ public abstract class ConversionPerformer {
 	
 	/**
 	 * Start the conversion from .xml to .xslx
-	 * @param sheetname the name of the new sheet which 
+	 * @param sheetName the name of the new sheet which 
 	 * will be created in the workbook
 	 */
-	public void convert ( String sheetname ) {
+	public void convert ( String sheetName ) {
 		
-		System.out.println ( "Creating " + sheetname + " sheet..." );
+		// create temp folder if it does not exist
+		File folder = new File ( TEMP_FOLDER );
+		if ( !folder.exists() )
+			folder.mkdir();
+		
+		System.out.println ( "Creating " + sheetName + " sheet..." );
 		
 		// filter the input xml to get only the data related to the catalogue
-		String outputFilename = filterXml( workbook, inputXml, XsltFilename, sheetname );
+		String outputFilename = filterXml( workbook, inputXml, 
+				XsltFilename, TEMP_FOLDER + sheetName );
 		
 		SheetConverter converter = getConverter( outputFilename );
 
 		// create the empty sheet
-		sheet = converter.buildSheet( workbook, sheetname );
+		sheet = converter.buildSheet( workbook, sheetName );
 		
 		makePreliminarOperations( converter, sheet );
 		
 		// parse the xml and insert the data
 		converter.parse();
-		
-		// delete the temp file
-		deleteFile( outputFilename );
-		
+
+		try {
+			Files.delete( Paths.get(outputFilename) );
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
 		// save the created sheet
 		sheet = converter.getSheet();
 	}
@@ -66,7 +81,8 @@ public abstract class ConversionPerformer {
 	 * @param XsltFilename, the xslt transformation to be applied to the input xml file
 	 * @param outputName, the name of the output file
 	 */
-	private String filterXml ( Workbook workbook, String inputXml, String XsltFilename, String outputName ) {
+	private String filterXml ( Workbook workbook, String inputXml, 
+			String XsltFilename, String outputName ) {
 		
 		String outputFilename = outputName + ".xml";
 		
@@ -79,18 +95,8 @@ public abstract class ConversionPerformer {
 			e.printStackTrace();
 			return null;
 		}
-		
-		return outputFilename;
-	}
 
-	/**
-	 * Delete the file contained in the path
-	 * @param path
-	 * @return
-	 */
-	private boolean deleteFile ( String path ) {
-		File file = new File ( path );
-		return file.delete();
+		return outputFilename;
 	}
 	
 	/**
