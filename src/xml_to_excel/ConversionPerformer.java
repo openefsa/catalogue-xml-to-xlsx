@@ -13,7 +13,7 @@ import org.apache.poi.ss.usermodel.Workbook;
 import sheet_converter.SheetConverter;
 
 public abstract class ConversionPerformer {
-
+	
 	private static final String TEMP_FOLDER = "TempFiles" 
 			+ System.getProperty("file.separator");
 	
@@ -42,16 +42,18 @@ public abstract class ConversionPerformer {
 	 */
 	public void convert ( String sheetName ) {
 		
+		System.out.println ( "Creating " + sheetName + " sheet..." );
+		
 		// create temp folder if it does not exist
 		File folder = new File ( TEMP_FOLDER );
 		if ( !folder.exists() )
 			folder.mkdir();
 		
-		System.out.println ( "Creating " + sheetName + " sheet..." );
-		
 		// filter the input xml to get only the data related to the catalogue
 		String outputFilename = filterXml( workbook, inputXml, 
 				XsltFilename, TEMP_FOLDER + sheetName );
+		
+		System.out.println ( sheetName + ": Created xml in " + outputFilename );
 		
 		SheetConverter converter = getConverter( outputFilename );
 
@@ -66,7 +68,7 @@ public abstract class ConversionPerformer {
 		try {
 			Files.delete( Paths.get(outputFilename) );
 		} catch (IOException e) {
-			e.printStackTrace();
+			//e.printStackTrace();
 		}
 
 		// save the created sheet
@@ -83,8 +85,9 @@ public abstract class ConversionPerformer {
 	 */
 	private String filterXml ( Workbook workbook, String inputXml, 
 			String XsltFilename, String outputName ) {
-		
-		String outputFilename = outputName + ".xml";
+
+		// use current time to create different files (support threads)
+		String outputFilename = outputName + "_" + System.nanoTime() + ".xml";
 		
 		// filter the input xml into a smaller xml
 		XsltCompiler compiler = new XsltCompiler( inputXml, XsltFilename, 

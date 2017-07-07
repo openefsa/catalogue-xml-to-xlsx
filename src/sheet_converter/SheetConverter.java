@@ -66,7 +66,7 @@ public abstract class SheetConverter {
 	// the sheet which is created with buildSheet()
 	private Sheet sheet;
 
-
+	private CellStyle style;
 
 	/**
 	 * Convert a xml file into an xml sheet
@@ -167,11 +167,15 @@ public abstract class SheetConverter {
 		// otherwise create the cell
 		Cell cell = row.createCell( header.getColumnIndex() );
 		
-		CellStyle cellStyle = sheet.getWorkbook().createCellStyle();
+		// create the data cell style if needed
+		if ( style == null ) {
+			style = sheet.getWorkbook().createCellStyle();
+			short df = sheet.getWorkbook().createDataFormat().getFormat("yyyy/MM/dd");
+			style.setDataFormat(df);
+		}
 
-		short df = sheet.getWorkbook().createDataFormat().getFormat("yyyy/MM/dd");
-		cellStyle.setDataFormat(df);
-		cell.setCellStyle(cellStyle);
+		// set the cell style
+		cell.setCellStyle( style );
 		
 		// set the date value
 		cell.setCellValue( DateTrimmer.dateToString( value ) );
