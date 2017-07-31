@@ -97,7 +97,7 @@ public class XmlCatalogueToExcel {
 	 * Convert the xml catalogue file into an excel file with 4 sheet
 	 * @throws TransformerException
 	 */
-	public void convertXmlToExcel () throws TransformerException {
+	public void convertXmlToExcel() throws TransformerException {
 
 		// create a new workbook
 		SXSSFWorkbook workbook = new SXSSFWorkbook();

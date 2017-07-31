@@ -39,8 +39,9 @@ public abstract class ConversionPerformer {
 	 * Start the conversion from .xml to .xslx
 	 * @param sheetName the name of the new sheet which 
 	 * will be created in the workbook
+	 * @throws TransformerException 
 	 */
-	public void convert ( String sheetName ) {
+	public void convert ( String sheetName ) throws TransformerException {
 		
 		System.out.println ( "Creating " + sheetName + " sheet..." );
 		
@@ -82,9 +83,10 @@ public abstract class ConversionPerformer {
 	 * @param workbook, the workbook which will contain the new sheet
 	 * @param XsltFilename, the xslt transformation to be applied to the input xml file
 	 * @param outputName, the name of the output file
+	 * @throws TransformerException 
 	 */
 	private String filterXml ( Workbook workbook, String inputXml, 
-			String XsltFilename, String outputName ) {
+			String XsltFilename, String outputName ) throws TransformerException {
 
 		// use current time to create different files (support threads)
 		String outputFilename = outputName + "_" + System.nanoTime() + ".xml";
@@ -92,12 +94,8 @@ public abstract class ConversionPerformer {
 		// filter the input xml into a smaller xml
 		XsltCompiler compiler = new XsltCompiler( inputXml, XsltFilename, 
 				outputFilename );
-		try {
-			compiler.compile();
-		} catch (TransformerException e) {
-			e.printStackTrace();
-			return null;
-		}
+		
+		compiler.compile();
 
 		return outputFilename;
 	}
