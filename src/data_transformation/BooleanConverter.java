@@ -13,7 +13,7 @@ public class BooleanConverter {
 	 * @return
 	 */
 	public static boolean getBoolean( String value ) {
-		if ( value.equals("true") || value.equals("1") )
+		if ( value.equals("true") || value.equals("1") || value.equals("YES") )
 			return true;
 		else return false;
 	}
