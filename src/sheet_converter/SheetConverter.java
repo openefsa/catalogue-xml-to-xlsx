@@ -259,7 +259,6 @@ public abstract class SheetConverter {
 			// when a node is encountered
 			public void startElement(String uri, String localName,String qName, 
 					Attributes attributes) throws SAXException {
-
 				startAnalyzingNode( qName, attributes );
 			}
 
@@ -292,6 +291,7 @@ public abstract class SheetConverter {
 			saxParser.parse( file, handler );
 
 		} catch ( SAXParseException e ) {
+			e.printStackTrace();
 			// sheet with no data => an exception is thrown
 		} catch (IOException e) {
 			e.printStackTrace();

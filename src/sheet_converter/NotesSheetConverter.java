@@ -48,7 +48,6 @@ public class NotesSheetConverter extends SheetConverter {
 	
 	@Override
 	public void startElement(Row row, String nodeName, Attributes attr) {
-		
 		// if operation detail node, we need to read its attributes
 		// to get the operation name and the operation date information
 		switch ( nodeName ) {
@@ -56,10 +55,8 @@ public class NotesSheetConverter extends SheetConverter {
 
 			// get the node attributes
 			lastName = attr.getValue( XmlNodes.OP_NAME );
-			
 			String opDate = attr.getValue( XmlNodes.OP_DATE );
 			lastDate = DateTrimmer.trimDate( opDate );
-
 			break;
 		}
 	}

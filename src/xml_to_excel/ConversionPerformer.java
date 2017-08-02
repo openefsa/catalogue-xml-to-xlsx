@@ -60,9 +60,9 @@ public abstract class ConversionPerformer {
 
 		// create the empty sheet
 		sheet = converter.buildSheet( workbook, sheetName );
-		
+
 		makePreliminarOperations( converter, sheet );
-		
+
 		// parse the xml and insert the data
 		converter.parse();
 

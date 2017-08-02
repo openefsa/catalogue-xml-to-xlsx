@@ -18,5 +18,6 @@
 	<xsl:template match="catalogueTerms"/>
 	<xsl:template match="catalogueHierarchies"/>
 	<xsl:template match="catalogueVersion"/>
+	<xsl:template match="catalogueGroups"/>
 	
 </xsl:stylesheet>
