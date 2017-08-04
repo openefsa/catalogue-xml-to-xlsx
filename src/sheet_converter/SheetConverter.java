@@ -291,7 +291,7 @@ public abstract class SheetConverter {
 			saxParser.parse( file, handler );
 
 		} catch ( SAXParseException e ) {
-			e.printStackTrace();
+			//e.printStackTrace();
 			// sheet with no data => an exception is thrown
 		} catch (IOException e) {
 			e.printStackTrace();
