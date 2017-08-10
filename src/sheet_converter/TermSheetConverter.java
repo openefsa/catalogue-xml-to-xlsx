@@ -36,7 +36,8 @@ public class TermSheetConverter extends ExtendedSheetConverter {
 	 * @param hierarchySheet
 	 * @param attributeSheet
 	 */
-	public TermSheetConverter(String inputFilename, String rootNode, Sheet hierarchySheet, Sheet attributeSheet ) {
+	public TermSheetConverter(String inputFilename, String rootNode, 
+			Sheet hierarchySheet, Sheet attributeSheet ) {
 		super(inputFilename, rootNode );
 		
 		isHierarchyAssignment = false;
@@ -183,31 +184,58 @@ public class TermSheetConverter extends ExtendedSheetConverter {
 	}
 
 	/**
-	 * Get all the NON catalogue attributes codes and names
+	 * Get all the attributes codes and names which are not facet categories
 	 * @param sheet
 	 * @param field
 	 * @return
 	 */
-	private HashMap<String, String> getSimpleAttributes ( Sheet attrSheet ) {
+	private HashMap<String, String> getSimpleAttributes ( Sheet attrSheet, Sheet hierSheet ) {
 
 		HashMap<String, String> attrs = new HashMap<>();
+		
+		ArrayList<String> hierCodes = SheetConverter.getSheetColumn( hierSheet, Headers.CODE );
 		
 		// get the names and the types of the attributes
 		ArrayList<String> codes = SheetConverter.getSheetColumn( attrSheet, Headers.CODE );
 		ArrayList<String> names = SheetConverter.getSheetColumn( attrSheet, Headers.NAME );
 		ArrayList<String> types = SheetConverter.getSheetColumn( attrSheet, Headers.ATTR_TYPE );
+		ArrayList<String> catCodes = SheetConverter.getSheetColumn( attrSheet, Headers.ATTR_CAT_CODE );
 		
 		if ( codes.size() != names.size() || names.size() != types.size() ) {
-			System.err.println ( "wrong number of rows for attribute sheet" );
+			System.err.println ( "Wrong number of rows for attribute sheet" );
 			return null;
 		}
 		
 		// For each pair of name and type
 		for ( int i = 0; i < names.size(); i++ ) {
 			
+			boolean addIt = false;
+			
+			// if catalogue attribute
+			if ( types.get(i).equals( SpecialValues.ATTR_CAT_TYPE ) ) {
+				
+				// check if hierarchy is present into the catalogue
+				String[] split = catCodes.get(i).split("\\.");
+				
+				if ( split.length > 1 ) {
+					
+					// get hierarchy code from the composite code
+					String hierarchyCode = split[1];
+					
+					// add the attribute just if we have a catalogue
+					// attribute with a hierarchy that does not belong 
+					// to the current catalogue
+					if ( !hierCodes.contains( hierarchyCode ) )
+						addIt = true;
+				}
+			}
+			else {
+				addIt = true;
+			}
+			
 			// if the type is not a catalogue type add the name
 			// to the list identified by the code
-			if ( !types.get(i).equals( SpecialValues.ATTR_CAT_TYPE ) ) {
+			if ( addIt ) {
 				attrs.put( codes.get(i), names.get(i) );
 			}
 		}
@@ -244,7 +272,7 @@ public class TermSheetConverter extends ExtendedSheetConverter {
 		// but their excel column name actually is the attribute name
 		//
 		
-		HashMap<String, String> attributes = getSimpleAttributes( attributeSheet );
+		HashMap<String, String> attributes = getSimpleAttributes( attributeSheet, hierarchySheet );
 		
 		for ( String key : attributes.keySet() ) {
 			headers.put( key, new SheetHeader( columnIndex++, attributes.get( key ) ) );

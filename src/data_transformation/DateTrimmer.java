@@ -19,6 +19,9 @@ public class DateTrimmer {
 	 */
 	public static Date trimDate ( String stringDate ) {
 
+		if ( stringDate.isEmpty() )
+			return null;
+		
 		// try first format
 		DateFormat format = new SimpleDateFormat( "yyyy-MM-dd" );
 		Date date;
@@ -50,6 +53,9 @@ public class DateTrimmer {
 	 * @return
 	 */
 	public static String dateToString ( Date date ) {
+		
+		if ( date == null )
+			return "";
 		
 		DateFormat format = new SimpleDateFormat( "yyyy/MM/dd" );
 		return format.format( date );

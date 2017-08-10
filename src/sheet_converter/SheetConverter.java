@@ -421,8 +421,13 @@ public abstract class SheetConverter {
 				continue;
 
 			// add the retrieved value to the output list
-			if ( colIndex >= 0 && row.getCell( colIndex ) != null )
-				values.add( row.getCell( colIndex ).getStringCellValue() );
+			if ( colIndex >= 0 ) {
+				
+				if ( row.getCell( colIndex ) != null )
+					values.add( row.getCell( colIndex ).getStringCellValue() );
+				else
+					values.add("");  // add empty string if not found
+			}
 		}
 
 		return values;
