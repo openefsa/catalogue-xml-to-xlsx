@@ -11,9 +11,14 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
+
 
 public class XsltCompiler {
 
+	private static final Logger LOGGER = LogManager.getLogger(XsltCompiler.class);
+	
 	private String inputFilename;
 	private String xsltFilename;
 	private String outputFilename;
@@ -59,6 +64,7 @@ public class XsltCompiler {
 			stream.close();
 		} catch (IOException e) {
 			e.printStackTrace();
+			LOGGER.error("Cannot apply xslt", e);
 		}
 	}
 }

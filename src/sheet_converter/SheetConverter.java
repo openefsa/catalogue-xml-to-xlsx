@@ -9,6 +9,8 @@ import java.util.Iterator;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParserFactory;
 
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Row;
@@ -38,6 +40,8 @@ import sheet_header.SheetHeader;
  */
 public abstract class SheetConverter {
 
+	private static final Logger LOGGER = LogManager.getLogger(SheetConverter.class);
+	
 	// print each 500 rows an echo to the console
 	private static final int printRowCount = 500;
 	private int printCount = 0;
@@ -251,6 +255,7 @@ public abstract class SheetConverter {
 			saxParser = factory.newSAXParser();
 		} catch (ParserConfigurationException | SAXException e) {
 			e.printStackTrace();
+			LOGGER.error("Cannot insert data", e);
 		}
 
 		// create the parser handler
@@ -293,10 +298,13 @@ public abstract class SheetConverter {
 		} catch ( SAXParseException e ) {
 			//e.printStackTrace();
 			// sheet with no data => an exception is thrown
+			LOGGER.info("Sheet with no data found");
 		} catch (IOException e) {
 			e.printStackTrace();
+			LOGGER.error("IO", e);
 		} catch (SAXException e) {
 			e.printStackTrace();
+			LOGGER.error("SAX", e);
 		}
 	}
 
@@ -351,7 +359,7 @@ public abstract class SheetConverter {
 		// Diagnostic: print every printRowCount rows
 		if ( rowNum >= printCount + printRowCount ) {
 			printCount = rowNum;
-			System.out.println ( "Processed " + rowNum + " " + rootNode );
+			LOGGER.info ( "Processed " + rowNum + " " + rootNode );
 		}
 	}
 

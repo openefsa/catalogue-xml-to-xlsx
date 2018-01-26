@@ -7,6 +7,8 @@ import java.nio.file.Paths;
 
 import javax.xml.transform.TransformerException;
 
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 
@@ -14,7 +16,9 @@ import sheet_converter.SheetConverter;
 
 public abstract class ConversionPerformer {
 	
-	private static final String TEMP_FOLDER = "TempFiles" 
+	private static final Logger LOGGER = LogManager.getLogger(ConversionPerformer.class);
+	
+	private static final String TEMP_FOLDER = "temp" 
 			+ System.getProperty("file.separator");
 	
 	private Workbook workbook;
@@ -43,7 +47,7 @@ public abstract class ConversionPerformer {
 	 */
 	public void convert ( String sheetName ) throws TransformerException {
 		
-		System.out.println ( "Creating " + sheetName + " sheet..." );
+		LOGGER.info ( "Creating " + sheetName + " sheet..." );
 		
 		// create temp folder if it does not exist
 		File folder = new File ( TEMP_FOLDER );
@@ -54,7 +58,7 @@ public abstract class ConversionPerformer {
 		String outputFilename = filterXml( workbook, inputXml, 
 				XsltFilename, TEMP_FOLDER + sheetName );
 		
-		System.out.println ( sheetName + ": Created xml in " + outputFilename );
+		LOGGER.info ( sheetName + ": Created xml in " + outputFilename );
 		
 		SheetConverter converter = getConverter( outputFilename );
 

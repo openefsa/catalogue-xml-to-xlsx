@@ -3,6 +3,8 @@ package sheet_converter;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.xml.sax.Attributes;
@@ -21,6 +23,8 @@ import sheet_header.SheetHeader;
  */
 public class TermSheetConverter extends ExtendedSheetConverter {
 
+	private static final Logger LOGGER = LogManager.getLogger(TermSheetConverter.class);
+	
 	private String masterHierarchyCode;     // which is the hierarchy code of the master hierarchy?
 	private boolean isHierarchyAssignment;  // true if we are processing a hierarchy assignment node
 	private boolean isImplicitAttribute;    // true if we are processing an implicit attribute node
@@ -202,7 +206,7 @@ public class TermSheetConverter extends ExtendedSheetConverter {
 		ArrayList<String> catCodes = SheetConverter.getSheetColumn( attrSheet, Headers.ATTR_CAT_CODE );
 		
 		if ( codes.size() != names.size() || names.size() != types.size() ) {
-			System.err.println ( "Wrong number of rows for attribute sheet" );
+			LOGGER.error( "Wrong number of rows for attribute sheet" );
 			return null;
 		}
 		

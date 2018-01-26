@@ -5,6 +5,8 @@ import java.io.IOException;
 
 import javax.xml.transform.TransformerException;
 
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.apache.poi.openxml4j.util.ZipSecureFile;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
@@ -30,6 +32,8 @@ import sheet_converter.XmlNodes;
  *
  */
 public class XmlCatalogueToExcel {
+	
+	private static final Logger LOGGER = LogManager.getLogger(XmlCatalogueToExcel.class);
 	
 	public static final String WORKING_DIR = "xslt\\";
 
@@ -61,11 +65,11 @@ public class XmlCatalogueToExcel {
 	 */
 	public static void main ( String[] args ) {
 		
-		System.out.println ( "#### Remember to increase the RAM max limit if you are converting big catalogues! (e.g. -Xms1024m) ####" );
+		LOGGER.info ( "#### Remember to increase the RAM max limit if you are converting big catalogues! (e.g. -Xms1024m) ####" );
 		
 		if ( args.length != 2 ) {
 			
-			System.err.println ( "Wrong number of arguments. Please specify the input catalogue xml and the output xlsx file path "
+			LOGGER.error ( "Wrong number of arguments. Please specify the input catalogue xml and the output xlsx file path "
 					+ "(example: java -jar xmlToExcel.jar D:\\catalogue.xml D:\\output.xlsx)" );
 			
 			return;
@@ -77,6 +81,7 @@ public class XmlCatalogueToExcel {
 			converter.convertXmlToExcel ();
 		} catch (TransformerException e) {
 			e.printStackTrace();
+			LOGGER.error("Cannot convert xml to xlsx", e);
 		}
 	}
 	
@@ -211,34 +216,23 @@ public class XmlCatalogueToExcel {
 		notes.convert( Headers.NOTES_SHEET_NAME );
 
 		
-		System.out.println ( "Writing the excel file..." );
+		LOGGER.info ( "Writing the excel file..." );
 		
 		// save the results into the excel file
-		FileOutputStream fileOut = null;
-		try {
-
-			fileOut = new FileOutputStream( outputXlsx );
+		try (FileOutputStream fileOut = new FileOutputStream( outputXlsx );) {
 
 			// remove limits of dimensions for the workbook
 			ZipSecureFile.setMinInflateRatio( 0 );
 			
 			workbook.write( fileOut );
-			System.out.println ( "Done" );
+			LOGGER.info ( "Done" );
 
+			fileOut.flush();
+			fileOut.close();
+			
 		} catch ( IOException e) {
 			e.printStackTrace();
-			System.out.println ( "Failed" );
-		}
-		finally {
-		
-			// close resources
-			try {
-				fileOut.flush();
-				fileOut.close();
-				workbook.close();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+			LOGGER.error("Cannot convert xml to xlsx", e);
 		}
 	}
 }
