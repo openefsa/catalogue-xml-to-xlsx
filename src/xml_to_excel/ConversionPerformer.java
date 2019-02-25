@@ -7,8 +7,8 @@ import java.nio.file.Paths;
 
 import javax.xml.transform.TransformerException;
 
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 
@@ -61,7 +61,7 @@ public abstract class ConversionPerformer {
 		LOGGER.info ( sheetName + ": Created xml in " + outputFilename );
 		
 		SheetConverter converter = getConverter( outputFilename );
-
+		
 		// create the empty sheet
 		sheet = converter.buildSheet( workbook, sheetName );
 
