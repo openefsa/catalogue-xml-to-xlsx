@@ -31,8 +31,6 @@ public class XmlCatalogueToExcel {
 
 	private static final Logger LOGGER = LogManager.getLogger(XmlCatalogueToExcel.class);
 
-	public static final String WORKING_DIR = "xslt\\";
-
 	// the name of the xslt which filter only the catalogue information from the
 	// input xml
 	public static final String CATALOGUE_XSLT_NAME = "catalogue.xslt";
