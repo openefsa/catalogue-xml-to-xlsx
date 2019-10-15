@@ -24,6 +24,7 @@ import sheet_converter.XmlNodes;
  * Convert a catalogue from XML format to excel format. The excel contains 5
  * sheets: - catalogue - hierarchy - attribute - term - releaseNotes
  * 
+ * @author shahaal
  * @author avonva
  *
  */
@@ -110,7 +111,7 @@ public class XmlCatalogueToExcel {
 		try (SXSSFWorkbook workbook = new SXSSFWorkbook()) {
 
 			// convert catalogue sheet
-			ConversionPerformer cat = new ConversionPerformer(workbook, inputXml, CATALOGUE_XSLT_NAME) {
+			final ConversionPerformer cat = new ConversionPerformer(workbook, inputXml, CATALOGUE_XSLT_NAME) {
 
 				@Override
 				public SheetConverter getConverter(String filename) {
@@ -128,7 +129,7 @@ public class XmlCatalogueToExcel {
 			cat.convert(Headers.CAT_SHEET_NAME);
 
 			// convert hierarchy sheet
-			ConversionPerformer hier = new ConversionPerformer(workbook, inputXml, HIERARCHY_XSLT_NAME) {
+			final ConversionPerformer hier = new ConversionPerformer(workbook, inputXml, HIERARCHY_XSLT_NAME) {
 
 				@Override
 				public SheetConverter getConverter(String inputFilename) {
@@ -149,7 +150,7 @@ public class XmlCatalogueToExcel {
 			hier.convert(Headers.HIER_SHEET_NAME);
 
 			// convert attr sheet
-			ConversionPerformer attr = new ConversionPerformer(workbook, inputXml, ATTRIBUTE_XSLT_NAME) {
+			final ConversionPerformer attr = new ConversionPerformer(workbook, inputXml, ATTRIBUTE_XSLT_NAME) {
 
 				@Override
 				public SheetConverter getConverter(String inputFilename) {
@@ -212,8 +213,8 @@ public class XmlCatalogueToExcel {
 
 			LOGGER.info("Writing the excel file...");
 
-			//solve memory leak, save the results into the excel file
-			try(FileOutputStream fileOut = new FileOutputStream(outputXlsx)){
+			// solve memory leak, save the results into the excel file
+			try (FileOutputStream fileOut = new FileOutputStream(outputXlsx)) {
 
 				// remove limits of dimensions for the workbook
 				ZipSecureFile.setMinInflateRatio(0);
@@ -224,7 +225,7 @@ public class XmlCatalogueToExcel {
 				fileOut.flush();
 				fileOut.close();
 			}
-			
+
 		} catch (IOException e) {
 			e.printStackTrace();
 			LOGGER.error("Cannot convert xml to xlsx", e);
