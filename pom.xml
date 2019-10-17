@@ -3,8 +3,14 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>openefsa</groupId>
-	<artifactId>cat_converter_xml_to_xlsx</artifactId>
+	<artifactId>catalogue-xml-to-xlsx</artifactId>
 	<version>1.0.0</version>
+
+	<properties>
+		<maven.compiler.source>1.8</maven.compiler.source>
+		<maven.compiler.target>1.8</maven.compiler.target>
+		<project.build.sourceEncoding>Cp1252</project.build.sourceEncoding>
+	</properties>
 
 	<dependencies>
 		<dependency>
@@ -44,7 +50,7 @@
 				</includes>
 			</resource>
 		</resources>
-		
+
 		<plugins>
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
@@ -56,6 +62,9 @@
 						<goals>
 							<goal>aggregate-download-licenses</goal>
 						</goals>
+						<configuration>
+							<licensesOutputDirectory>third-party-license</licensesOutputDirectory>
+						</configuration>
 					</execution>
 				</executions>
 			</plugin>
