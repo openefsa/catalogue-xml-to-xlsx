@@ -6,7 +6,7 @@
 This maven project module, written in Java, can be used for converting EFSA's catalogues from xml to xlsx.
 
 # Dependencies
-All project dependencies are listed in the [pom.xml](blob/master/pom.xml) file.
+All project dependencies are listed in the [pom.xml](pom.xml) file.
 
 ## Import the project
 In order to import the project correctly into the integrated development environment (e.g. Eclipse), it is necessary to download the project together with all its dependencies.
