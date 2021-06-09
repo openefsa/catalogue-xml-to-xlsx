@@ -1,0 +1,1 @@
+2021-06-09 15:54:43,413 ERROR x.XmlCatalogueToExcel [main] Wrong number of arguments. Please specify the input catalogue xml and the output xlsx file path (example: java -jar xmlToExcel.jar D:\catalogue.xml D:\output.xlsx)
