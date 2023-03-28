@@ -254,8 +254,8 @@ public abstract class SheetConverter {
 		try {
 			saxParser = factory.newSAXParser();
 		} catch (ParserConfigurationException | SAXException e) {
-			e.printStackTrace();
 			LOGGER.error("Cannot insert data", e);
+			e.printStackTrace();
 		}
 
 		// create the parser handler
@@ -300,11 +300,11 @@ public abstract class SheetConverter {
 			// sheet with no data => an exception is thrown
 			LOGGER.info("Sheet with no data found");
 		} catch (IOException e) {
-			e.printStackTrace();
 			LOGGER.error("IO", e);
-		} catch (SAXException e) {
 			e.printStackTrace();
+		} catch (SAXException e) {
 			LOGGER.error("SAX", e);
+			e.printStackTrace();
 		}
 	}
 
