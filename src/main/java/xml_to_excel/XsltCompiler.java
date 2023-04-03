@@ -64,8 +64,8 @@ public class XsltCompiler {
 			transformer.reset();
 			stream.close();
 		} catch (IOException e) {
-			e.printStackTrace();
 			LOGGER.error("Cannot apply xslt", e);
+			e.printStackTrace();
 		}
 	}
 }

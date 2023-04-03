@@ -5,12 +5,17 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 /**
  * Manage date format in standard format yyyy-MM-dd
  * @author avonva
  *
  */
 public class DateTrimmer {
+	
+	private static final Logger LOGGER = LogManager.getLogger(DateTrimmer.class);
 
 	/**
 	 * Trim a timestamp only to year-month-day fields
@@ -40,6 +45,7 @@ public class DateTrimmer {
 				date = format2.parse( stringDate );
 				return date;
 			} catch (ParseException e1) {
+				LOGGER.error("Error during date parsing ", e1);
 				e1.printStackTrace();
 			}
 		}
@@ -58,6 +64,8 @@ public class DateTrimmer {
 			return "";
 		
 		DateFormat format = new SimpleDateFormat( "yyyy/MM/dd" );
+		
+		LOGGER.debug("Date after format is: " + format.format( date ));
 		return format.format( date );
 	}
 }
